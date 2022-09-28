@@ -66,6 +66,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut event_pump = context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
     let mut restart_game: bool = true;
+    let mut is_game_over: bool = false;
     let mut board: Array2D<CELL>;
     let mut wormy: Snake;
     let mut has_moved: bool; // used to launch the timer once the player moved
@@ -89,7 +90,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
 
         last_time = Instant::now();
         'game_loop: loop {
-
+            
             if !has_apple {
                 let apple_pos = random_empty_cell(&board);
                 match apple_pos {
@@ -162,14 +163,66 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 println!("send custom event!");
                 last_time = Instant::now();
                 match wormy.dir {
-                    DIRECTION::UPWARD => { wormy.pos.1 -= 1; }
-                    DIRECTION::DOWNWARD => { wormy.pos.1 += 1; }
-                    DIRECTION::LEFTWARD => { wormy.pos.0 -= 1; }
-                    DIRECTION::RIGHTWARD => { wormy.pos.0 += 1; }
+                    DIRECTION::UPWARD => {
+                        if wormy.pos.1 == 0 {
+                            is_game_over = true;
+                            break 'game_loop;
+                        }else {
+                            wormy.pos.1 -= 1;
+                        }
+                    }
+                    DIRECTION::DOWNWARD => {
+                        if wormy.pos.1 >= BOARD_SIZE as usize {
+                            is_game_over = true;
+                            break 'game_loop;
+                        }else {
+                            wormy.pos.1 += 1;
+                        }
+                    }
+                    DIRECTION::LEFTWARD => {
+                        if wormy.pos.0 == 0 {
+                            is_game_over = true;
+                            break 'game_loop;
+                        }else {
+                            wormy.pos.0 -= 1;
+                        }
+                    }
+                    DIRECTION::RIGHTWARD => {
+                        if wormy.pos.0 >= BOARD_SIZE as usize {
+                            is_game_over = true;
+                            break 'game_loop;
+                        }else {
+                            wormy.pos.0 += 1;
+                        }
+                    }
                     _ => {}
                 }
                 draw_board(&board, &wormy, &mut canvas);
                 canvas.present();
+            }
+        }
+
+        if is_game_over {
+            draw_game_over(&mut canvas);
+            canvas.present();
+
+            'game_over_loop: loop {
+                for event in event_pump.poll_iter() {
+                    match event {
+                    // Quit the program is window is closed or ESC is pressed.
+                        Event::Quit {..} |
+                        Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                            break 'game_over_loop;
+                        }
+                        Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+                            println!("restart");
+                            restart_game = true;
+                            is_game_over = false;
+                            break 'game_over_loop;
+                        }
+                        _ => {}
+                    }
+                }
             }
         }
     }
@@ -196,6 +249,11 @@ fn draw_board(board: &Array2D<CELL>, snake: &Snake, canvas:  &mut sdl2::render::
     canvas.set_draw_color(Color::GREEN);
     let cell_rect = Rect::new((snake.pos.0 as i32) * (CELL_SIZE as i32), (CELL_SIZE as i32) * (snake.pos.1 as i32), CELL_SIZE, CELL_SIZE);
     canvas.fill_rect(cell_rect).unwrap();
+}
+
+fn draw_game_over(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
+    canvas.set_draw_color(Color::RED);
+    canvas.clear();
 }
 
 fn random_empty_cell(board: &Array2D<CELL>) -> Option<(usize, usize)> {
