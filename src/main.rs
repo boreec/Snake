@@ -68,6 +68,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut restart_game: bool = true;
     let mut board: Array2D<CELL>;
     let mut wormy: Snake;
+    let mut has_moved: bool; // used to launch the timer once the player moved
     let mut has_apple: bool; // used to spawn apple on the board
     let mut has_snake: bool; // used to spawn snake on the board
     let mut last_time: Instant; // used to send an event periodically
@@ -82,6 +83,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         };
         has_apple = false;
         has_snake = false;
+        has_moved = false;
         clear_window(&mut canvas);
         canvas.present();
 
@@ -130,18 +132,22 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
                         println!("going up");
                         wormy.dir = DIRECTION::UPWARD;
+                        has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
                         println!("going down");
                         wormy.dir = DIRECTION::DOWNWARD;
+                        has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
                         println!("going left");
                         wormy.dir = DIRECTION::LEFTWARD;
+                        has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
                         println!("going right");
                         wormy.dir = DIRECTION::RIGHTWARD;
+                        has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
                         println!("restart");
@@ -152,7 +158,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 }
             }
             
-            if last_time.elapsed().as_millis() > FRAME_DURATION {
+            if has_moved && last_time.elapsed().as_millis() > FRAME_DURATION {
                 println!("send custom event!");
                 last_time = Instant::now();
             }
