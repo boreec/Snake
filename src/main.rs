@@ -161,6 +161,15 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             if has_moved && last_time.elapsed().as_millis() > FRAME_DURATION {
                 println!("send custom event!");
                 last_time = Instant::now();
+                match wormy.dir {
+                    DIRECTION::UPWARD => { wormy.pos.1 -= 1; }
+                    DIRECTION::DOWNWARD => { wormy.pos.1 += 1; }
+                    DIRECTION::LEFTWARD => { wormy.pos.0 -= 1; }
+                    DIRECTION::RIGHTWARD => { wormy.pos.0 += 1; }
+                    _ => {}
+                }
+                draw_board(&board, &wormy, &mut canvas);
+                canvas.present();
             }
         }
     }
