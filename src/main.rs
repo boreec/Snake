@@ -57,16 +57,41 @@ struct Snake {
 }
 
 impl Snake {
-    // return true if the Snake can not move in
-    // its direction (because of a wall, board edge, its own tail...)
+    // return true if the Snake can not move in its direction
+    // (because of a wall, board edge, its own tail...)
     fn is_blocked(&self) -> bool {
-        // check the boundaries:
-        if (self.dir == DIRECTION::UPWARD && self.pos.1 == 0) ||
-            (self.dir == DIRECTION::DOWNWARD && self.pos.1 == (BOARD_SIZE - 1) as usize) ||
-            (self.dir == DIRECTION::LEFTWARD && self.pos.0 == 0) ||
-            (self.dir == DIRECTION::RIGHTWARD && self.pos.0 == (BOARD_SIZE - 1) as usize) {return true;}
+        if self.dir == DIRECTION::UPWARD && self.pos.1 == 0 {
+            return true;
+        }
+        if self.dir == DIRECTION::DOWNWARD && self.pos.1 as u32 == BOARD_SIZE - 1 {
+            return true;
+        }
+        if self.dir == DIRECTION::RIGHTWARD && self.pos.0 as u32 == BOARD_SIZE - 1 {
+            return true;
+        }
+        if self.dir == DIRECTION::LEFTWARD && self.pos.0 as u32 == 0 {
+            return true;
+        }
 
-        return false;
+        let target_cell: Option<(usize, usize)> = {
+            match self.dir {
+                DIRECTION::UPWARD => { Some((self.pos.0, self.pos.1 - 1)) }
+                DIRECTION::DOWNWARD => { Some((self.pos.0, self.pos.1 + 1)) }
+                DIRECTION::RIGHTWARD => { Some((self.pos.0 + 1, self.pos.1)) }
+                DIRECTION::LEFTWARD => { Some((self.pos.0 - 1, self.pos.1)) }
+                _ => {None}
+            }
+        };
+        if target_cell.is_none() {
+            panic!("target cell has unknown value because of undefined direction");
+        }
+
+        // detect if the snake run over itself
+        let mut i = 0;
+        while i < self.tail.len() && self.tail[i] != target_cell.unwrap() {
+            i += 1;
+        }
+        return i < self.tail.len();
     }
 
     fn move_up(&mut self) {
@@ -211,6 +236,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     is_game_over = true;
                     break 'game_loop;
                 }
+                
                 match wormy.dir {
                     DIRECTION::UPWARD => { wormy.move_up(); }
                     DIRECTION::DOWNWARD => { wormy.move_down(); }
