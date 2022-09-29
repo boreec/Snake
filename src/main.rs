@@ -185,7 +185,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         }
                     }
                     DIRECTION::DOWNWARD => {
-                        if wormy.pos.1 >= BOARD_SIZE as usize {
+                        if wormy.pos.1 == (BOARD_SIZE - 1) as usize {
                             is_game_over = true;
                             break 'game_loop;
                         }else {
@@ -201,7 +201,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         }
                     }
                     DIRECTION::RIGHTWARD => {
-                        if wormy.pos.0 >= BOARD_SIZE as usize {
+                        if wormy.pos.0 == (BOARD_SIZE - 1) as usize {
                             is_game_over = true;
                             break 'game_loop;
                         }else {
