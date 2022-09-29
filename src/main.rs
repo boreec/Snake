@@ -168,23 +168,20 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         if is_game_over {
             draw_game_over(&mut canvas);
             canvas.present();
-
             'game_over_loop: loop {
-                for event in event_pump.poll_iter() {
-                    match event {
-                    // Quit the program is window is closed or ESC is pressed.
-                        Event::Quit {..} |
-                        Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                            break 'game_over_loop;
-                        }
-                        Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
-                            println!("restart");
-                            restart_game = true;
-                            is_game_over = false;
-                            break 'game_over_loop;
-                        }
-                        _ => {}
+                let e = event_pump.wait_event();
+                match e {
+                    Event::Quit {..} |
+                    Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                        break 'game_over_loop;
                     }
+                    Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+                        println!("restart");
+                        restart_game = true;
+                        is_game_over = false;
+                        break 'game_over_loop;
+                    }
+                    _ => {}
                 }
             }
         }
