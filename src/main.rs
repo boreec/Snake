@@ -22,7 +22,7 @@ const BOARD_SIZE: u32 = 10;
 const CELL_SIZE: u32 = WINDOW_SIZE / BOARD_SIZE;
 
 // The Time between two frames in milliseconds.
-const FRAME_DURATION: u128 = 500;
+const FRAME_DURATION: u128 = 100;
 
 const COLOR_BACKGROUND: sdl2::pixels::Color = Color::WHITE;
 const COLOR_APPLE: sdl2::pixels::Color = Color::RED;
@@ -41,6 +41,7 @@ enum CELL {
 // At first the snake does not move so its UNDEFINED.
 // Then, once an arrow key is pressed, its direction
 // is updated accordingly.
+#[derive(PartialEq)]
 enum DIRECTION {
     UNDEFINED,
     LEFTWARD,
@@ -53,6 +54,36 @@ struct Snake {
     pos: (usize, usize),
     dir: DIRECTION,
     tail: Vec<(usize, usize)>,
+}
+
+impl Snake {
+    // return true if the Snake can not move in
+    // its direction (because of a wall, board edge, its own tail...)
+    fn is_blocked(&self) -> bool {
+        // check the boundaries:
+        if (self.dir == DIRECTION::UPWARD && self.pos.1 == 0) ||
+            (self.dir == DIRECTION::DOWNWARD && self.pos.1 == (BOARD_SIZE - 1) as usize) ||
+            (self.dir == DIRECTION::LEFTWARD && self.pos.0 == 0) ||
+            (self.dir == DIRECTION::RIGHTWARD && self.pos.0 == (BOARD_SIZE - 1) as usize) {return true;}
+
+        return false;
+    }
+
+    fn move_up(&mut self) {
+        self.pos.1 -= 1;
+    }
+
+    fn move_down(&mut self) {
+        self.pos.1 += 1;
+    }
+
+    fn move_right(&mut self) {
+        self.pos.0 += 1;
+    }
+
+    fn move_left(&mut self) {
+        self.pos.0 -= 1;
+    }
 }
 
 fn main() {
@@ -175,39 +206,16 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 }
 
                 last_time = Instant::now();
+
+                if wormy.is_blocked() {
+                    is_game_over = true;
+                    break 'game_loop;
+                }
                 match wormy.dir {
-                    DIRECTION::UPWARD => {
-                        if wormy.pos.1 == 0 {
-                            is_game_over = true;
-                            break 'game_loop;
-                        }else {
-                            wormy.pos.1 -= 1;
-                        }
-                    }
-                    DIRECTION::DOWNWARD => {
-                        if wormy.pos.1 == (BOARD_SIZE - 1) as usize {
-                            is_game_over = true;
-                            break 'game_loop;
-                        }else {
-                            wormy.pos.1 += 1;
-                        }
-                    }
-                    DIRECTION::LEFTWARD => {
-                        if wormy.pos.0 == 0 {
-                            is_game_over = true;
-                            break 'game_loop;
-                        }else {
-                            wormy.pos.0 -= 1;
-                        }
-                    }
-                    DIRECTION::RIGHTWARD => {
-                        if wormy.pos.0 == (BOARD_SIZE - 1) as usize {
-                            is_game_over = true;
-                            break 'game_loop;
-                        }else {
-                            wormy.pos.0 += 1;
-                        }
-                    }
+                    DIRECTION::UPWARD => { wormy.move_up(); }
+                    DIRECTION::DOWNWARD => { wormy.move_down(); }
+                    DIRECTION::LEFTWARD => { wormy.move_left(); }
+                    DIRECTION::RIGHTWARD => { wormy.move_right(); }
                     _ => {}
                 }
                 draw_board(&board, &wormy, &mut canvas);
