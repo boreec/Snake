@@ -76,7 +76,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         'game_loop: loop {
             
             if !has_apple {
-                let apple_pos = random_empty_cell(&board);
+                let apple_pos = random_empty_cell(&board, &wormy);
                 match apple_pos {
                     Some(pos) => {
                         board[pos] = CELL::APPLE;
@@ -92,7 +92,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
 
             if !has_snake {
-                let snake_pos = random_empty_cell(&board);
+                let snake_pos = random_empty_cell(&board, &wormy);
                 match snake_pos {
                     Some(pos) => {
                         wormy.pos = pos;
@@ -201,16 +201,18 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     }
 }
 
-fn random_empty_cell(board: &Array2D<CELL>) -> Option<(usize, usize)> {
+fn random_empty_cell(board: &Array2D<CELL>, snake: &Snake) -> Option<(usize, usize)> {
     let mut available_cells:Vec<(usize, usize)> = Vec::new();
 
     for (i, row) in board.rows_iter().enumerate() {
         for (j, _element) in row.enumerate() {
-            if board[(i,j)] == CELL::EMPTY {
+            if board[(i,j)] == CELL::EMPTY && !snake.tail.contains(&(i as usize,j as usize)) && snake.pos != (i,j) {
+                
                 available_cells.push((i, j));
             }
         }
     }
+
     if available_cells.is_empty() {
         return None;
     }
