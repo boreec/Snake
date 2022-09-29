@@ -47,6 +47,7 @@ enum DIRECTION {
 struct Snake {
     pos: (usize, usize),
     dir: DIRECTION,
+    tail: Vec<(usize, usize)>,
 }
 
 fn main() {
@@ -81,6 +82,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         wormy = Snake {
             pos: (0,0),
             dir: DIRECTION::UNDEFINED,
+            tail: Vec::new(),
         };
         has_apple = false;
         has_snake = false;
@@ -160,7 +162,11 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
             
             if has_moved && last_time.elapsed().as_millis() > FRAME_DURATION {
-                println!("send custom event!");
+                if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {                
+                    wormy.tail.push((wormy.pos.0, wormy.pos.1));
+                    board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
+                }
+
                 last_time = Instant::now();
                 match wormy.dir {
                     DIRECTION::UPWARD => {
