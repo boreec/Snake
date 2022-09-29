@@ -194,20 +194,28 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         break 'game_loop;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {            
-                        wormy.dir = DIRECTION::UPWARD;
-                        has_moved = true;
+                        if wormy.dir != DIRECTION::DOWNWARD {
+                            wormy.dir = DIRECTION::UPWARD;
+                            has_moved = true;
+                        }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
-                        wormy.dir = DIRECTION::DOWNWARD;
-                        has_moved = true;
+                        if wormy.dir != DIRECTION::DOWNWARD {
+                            wormy.dir = DIRECTION::DOWNWARD;
+                            has_moved = true;
+                        }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
-                        wormy.dir = DIRECTION::LEFTWARD;
-                        has_moved = true;
+                        if wormy.dir != DIRECTION::RIGHTWARD {
+                            wormy.dir = DIRECTION::LEFTWARD;
+                            has_moved = true;
+                        }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
-                        wormy.dir = DIRECTION::RIGHTWARD;
-                        has_moved = true;
+                        if wormy.dir != DIRECTION::LEFTWARD {
+                            wormy.dir = DIRECTION::RIGHTWARD;
+                            has_moved = true;
+                        }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
                         restart_game = true;
