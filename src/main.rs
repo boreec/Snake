@@ -22,7 +22,12 @@ const BOARD_SIZE: u32 = 10;
 const CELL_SIZE: u32 = WINDOW_SIZE / BOARD_SIZE;
 
 // The Time between two frames in milliseconds.
-const FRAME_DURATION: u128 = 1000;
+const FRAME_DURATION: u128 = 500;
+
+const COLOR_BACKGROUND: sdl2::pixels::Color = Color::WHITE;
+const COLOR_APPLE: sdl2::pixels::Color = Color::RED;
+const COLOR_SNAKE_HEAD: sdl2::pixels::Color = Color::GREEN;
+const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0,200,0);
 
 // The board is divided is a dimensional grid with cells.
 // Each cell can be in one of the following states.
@@ -237,7 +242,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
 }
 
 fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>){
-    canvas.set_draw_color(Color::WHITE);
+    canvas.set_draw_color(COLOR_BACKGROUND);
     canvas.clear();
 }
 
@@ -246,16 +251,16 @@ fn draw_board(board: &Array2D<CELL>, snake: &Snake, canvas:  &mut sdl2::render::
     for (i, row) in board.rows_iter().enumerate() {
         for (j, element) in row.enumerate() {
             match element {
-                CELL::EMPTY => {draw_cell(i as i32, j as i32, Color::WHITE, canvas)}
-                CELL::APPLE => {draw_cell(i as i32, j as i32, Color::RED, canvas)}
+                CELL::EMPTY => {draw_cell(i as i32, j as i32, COLOR_BACKGROUND, canvas)}
+                CELL::APPLE => {draw_cell(i as i32, j as i32, COLOR_APPLE, canvas)}
             }
         }
     }
     //2. Draw the snake.
-    draw_cell(snake.pos.0 as i32, snake.pos.1 as i32, Color::GREEN, canvas);
+    draw_cell(snake.pos.0 as i32, snake.pos.1 as i32, COLOR_SNAKE_HEAD, canvas);
 
     for i in &snake.tail {
-        draw_cell(i.0 as i32, i.1 as i32, Color::GREEN, canvas);
+        draw_cell(i.0 as i32, i.1 as i32, COLOR_SNAKE_TAIL, canvas);
     }
 }
 
