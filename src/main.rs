@@ -1,115 +1,23 @@
 extern crate sdl2;
 
+mod view;
+mod game_logic;
+
 use array2d::Array2D;
+
+use crate::view::*;
+use crate::game_logic::*;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::Color;
-use sdl2::rect::Rect;
 
 use std::time::Instant;
 
 use rand::thread_rng;
 use rand::Rng;
 
-// The width and height in pixels for the main window.
-const WINDOW_SIZE: u32 = 800;
-
-// The width and height in CELLS for the board.
-const BOARD_SIZE: u32 = 10;
-
-// The width and height in pixels to represent a CELL.
-const CELL_SIZE: u32 = WINDOW_SIZE / BOARD_SIZE;
-
 // The Time between two frames in milliseconds.
 const FRAME_DURATION: u128 = 100;
-
-const COLOR_BACKGROUND: sdl2::pixels::Color = Color::WHITE;
-const COLOR_APPLE: sdl2::pixels::Color = Color::RED;
-const COLOR_SNAKE_HEAD: sdl2::pixels::Color = Color::GREEN;
-const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0,200,0);
-
-// The board is divided is a dimensional grid with cells.
-// Each cell can be in one of the following states.
-#[derive(Clone,PartialEq, Eq)]
-enum CELL {
-    EMPTY,
-    APPLE,
-}
-
-// The direction in which the snakes moves.
-// At first the snake does not move so its UNDEFINED.
-// Then, once an arrow key is pressed, its direction
-// is updated accordingly.
-#[derive(PartialEq)]
-enum DIRECTION {
-    UNDEFINED,
-    LEFTWARD,
-    RIGHTWARD,
-    UPWARD,
-    DOWNWARD,
-}
-
-struct Snake {
-    pos: (usize, usize),
-    dir: DIRECTION,
-    tail: Vec<(usize, usize)>,
-}
-
-impl Snake {
-    // return true if the Snake can not move in its direction
-    // (because of a wall, board edge, its own tail...)
-    fn is_blocked(&self) -> bool {
-        if self.dir == DIRECTION::UPWARD && self.pos.1 == 0 {
-            return true;
-        }
-        if self.dir == DIRECTION::DOWNWARD && self.pos.1 as u32 == BOARD_SIZE - 1 {
-            return true;
-        }
-        if self.dir == DIRECTION::RIGHTWARD && self.pos.0 as u32 == BOARD_SIZE - 1 {
-            return true;
-        }
-        if self.dir == DIRECTION::LEFTWARD && self.pos.0 as u32 == 0 {
-            return true;
-        }
-
-        let target_cell: Option<(usize, usize)> = {
-            match self.dir {
-                DIRECTION::UPWARD => { Some((self.pos.0, self.pos.1 - 1)) }
-                DIRECTION::DOWNWARD => { Some((self.pos.0, self.pos.1 + 1)) }
-                DIRECTION::RIGHTWARD => { Some((self.pos.0 + 1, self.pos.1)) }
-                DIRECTION::LEFTWARD => { Some((self.pos.0 - 1, self.pos.1)) }
-                _ => {None}
-            }
-        };
-        if target_cell.is_none() {
-            panic!("target cell has unknown value because of undefined direction");
-        }
-
-        // detect if the snake run over itself
-        let mut i = 0;
-        while i < self.tail.len() && self.tail[i] != target_cell.unwrap() {
-            i += 1;
-        }
-        return i < self.tail.len();
-    }
-
-    fn move_up(&mut self) {
-        self.pos.1 -= 1;
-    }
-
-    fn move_down(&mut self) {
-        self.pos.1 += 1;
-    }
-
-    fn move_right(&mut self) {
-        self.pos.0 += 1;
-    }
-
-    fn move_left(&mut self) {
-        self.pos.0 -= 1;
-    }
-}
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -281,40 +189,6 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
         }
     }
-}
-
-fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>){
-    canvas.set_draw_color(COLOR_BACKGROUND);
-    canvas.clear();
-}
-
-fn draw_board(board: &Array2D<CELL>, snake: &Snake, canvas:  &mut sdl2::render::Canvas<sdl2::video::Window>){
-    // 1. Draw the board (apple, walls, ...).
-    for (i, row) in board.rows_iter().enumerate() {
-        for (j, element) in row.enumerate() {
-            match element {
-                CELL::EMPTY => {draw_cell(i as i32, j as i32, COLOR_BACKGROUND, canvas)}
-                CELL::APPLE => {draw_cell(i as i32, j as i32, COLOR_APPLE, canvas)}
-            }
-        }
-    }
-    //2. Draw the snake.
-    draw_cell(snake.pos.0 as i32, snake.pos.1 as i32, COLOR_SNAKE_HEAD, canvas);
-
-    for i in &snake.tail {
-        draw_cell(i.0 as i32, i.1 as i32, COLOR_SNAKE_TAIL, canvas);
-    }
-}
-
-fn draw_cell(x: i32, y: i32, color: sdl2::pixels::Color, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>){
-    canvas.set_draw_color(color);
-    let cell_rect = Rect::new(x * (CELL_SIZE as i32), y * (CELL_SIZE as i32), CELL_SIZE, CELL_SIZE);
-    canvas.fill_rect(cell_rect).unwrap();
-}
-
-fn draw_game_over(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
-    canvas.set_draw_color(Color::RED);
-    canvas.clear();
 }
 
 fn random_empty_cell(board: &Array2D<CELL>) -> Option<(usize, usize)> {
