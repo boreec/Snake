@@ -132,28 +132,23 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
                         break 'game_loop;
                     }
-                    Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
-                        println!("going up");
+                    Event::KeyDown { keycode: Some(Keycode::Up), ..} => {            
                         wormy.dir = DIRECTION::UPWARD;
                         has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
-                        println!("going down");
                         wormy.dir = DIRECTION::DOWNWARD;
                         has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
-                        println!("going left");
                         wormy.dir = DIRECTION::LEFTWARD;
                         has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
-                        println!("going right");
                         wormy.dir = DIRECTION::RIGHTWARD;
                         has_moved = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
-                        println!("restart");
                         restart_game = true;
                         break 'game_loop;
                     }
@@ -165,6 +160,13 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {                
                     wormy.tail.push((wormy.pos.0, wormy.pos.1));
                     board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
+                    has_apple = false;
+                }
+                if !wormy.tail.is_empty() {
+                    for i in (1..wormy.tail.len()).rev() {
+                        wormy.tail[i] = wormy.tail[i - 1];
+                    }
+                    wormy.tail[0] = wormy.pos;
                 }
 
                 last_time = Instant::now();
