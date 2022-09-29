@@ -253,8 +253,13 @@ fn draw_board(board: &Array2D<CELL>, snake: &Snake, canvas:  &mut sdl2::render::
     }
     //2. Draw the snake.
     canvas.set_draw_color(Color::GREEN);
-    let cell_rect = Rect::new((snake.pos.0 as i32) * (CELL_SIZE as i32), (CELL_SIZE as i32) * (snake.pos.1 as i32), CELL_SIZE, CELL_SIZE);
+    let mut cell_rect = Rect::new((snake.pos.0 as i32) * (CELL_SIZE as i32), (CELL_SIZE as i32) * (snake.pos.1 as i32), CELL_SIZE, CELL_SIZE);
     canvas.fill_rect(cell_rect).unwrap();
+
+    for i in &snake.tail {
+        cell_rect = Rect::new((i.0 as i32) * (CELL_SIZE as i32), (i.1 as i32) * (CELL_SIZE as i32), CELL_SIZE, CELL_SIZE);
+        canvas.fill_rect(cell_rect).unwrap();
+    }
 }
 
 fn draw_game_over(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
