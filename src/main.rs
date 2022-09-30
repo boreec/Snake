@@ -21,6 +21,7 @@ struct FrameEvent;
 
 struct GameState {
     context: sdl2::Sdl,
+    board: Array2D<CELL>,
     is_game_restarted: bool,
     is_game_over:bool,
 }
@@ -40,6 +41,7 @@ fn main() {
 fn initialize_game_state(context: sdl2::Sdl) -> GameState {
     return GameState {
         context: context,
+        board: Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
         is_game_restarted: true,
         is_game_over: false,
     };
@@ -47,10 +49,9 @@ fn initialize_game_state(context: sdl2::Sdl) -> GameState {
 
 fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
 
-    let mut gs =initialize_game_state(context);
+    let mut gs = initialize_game_state(context);
     let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
-    let mut board: Array2D<CELL>;
     let mut wormy: Snake;
     let mut has_apple: bool; // used to spawn apple on the board
     let ev = gs.context.event().unwrap();
@@ -58,7 +59,6 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     while gs.is_game_restarted {
         gs.is_game_restarted = false;
         
-        board = Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize);
         wormy = Snake {
             pos: (0,0),
             dir: DIRECTION::UNDEFINED,
@@ -87,12 +87,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
 
             if !has_apple {
-                let apple_pos = random_empty_cell(&board, &wormy);
+                let apple_pos = random_empty_cell(&gs.board, &wormy);
                 match apple_pos {
                     Some(pos) => {
-                        board[pos] = CELL::APPLE;
+                        gs.board[pos] = CELL::APPLE;
                         has_apple = true;
-                        draw_board(&board, &wormy, &mut canvas);
+                        draw_board(&gs.board, &wormy, &mut canvas);
                         canvas.present();
                     }
                     None => {
@@ -103,12 +103,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
 
             if !wormy.has_spawned {
-                let snake_pos = random_empty_cell(&board, &wormy);
+                let snake_pos = random_empty_cell(&gs.board, &wormy);
                 match snake_pos {
                     Some(pos) => {
                         wormy.pos = pos;
                         wormy.has_spawned = true;
-                        draw_board(&board, &wormy, &mut canvas);
+                        draw_board(&gs.board, &wormy, &mut canvas);
                         canvas.present();
                     }
                     None => {
@@ -125,9 +125,9 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
                 println!("do something on timer :)");
                 if wormy.is_allowed_to_move {
-                    if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {
+                    if gs.board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {
                         wormy.tail.push((wormy.pos.0, wormy.pos.1));
-                        board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
+                        gs.board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
                         has_apple = false;
                     }
                     if !wormy.tail.is_empty() {
@@ -142,7 +142,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         break 'game_loop;
                     }
                     wormy.make_a_move();
-                    draw_board(&board, &wormy, &mut canvas);
+                    draw_board(&gs.board, &wormy, &mut canvas);
                     canvas.present();
                 }
             }else {
