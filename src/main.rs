@@ -74,9 +74,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         let _timer = timer_subsystem.add_timer(
             FRAME_DURATION,
             Box::new(|| {
-                println!("timer");
-                let fv = FrameEvent;
-                ev.push_custom_event(fv).unwrap();
+                ev.push_custom_event(FrameEvent).unwrap();
                 FRAME_DURATION
             }),
         );
