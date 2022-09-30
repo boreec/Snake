@@ -37,13 +37,17 @@ fn main() {
     game_loop(sdl_context, window);
 }
 
-fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
-
-    let mut gs = GameState {
+fn initialize_game_state(context: sdl2::Sdl) -> GameState {
+    return GameState {
         context: context,
         is_game_restarted: true,
         is_game_over: false,
     };
+}
+
+fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
+
+    let mut gs =initialize_game_state(context);
     let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
     let mut board: Array2D<CELL>;
