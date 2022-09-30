@@ -39,10 +39,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut is_game_over: bool = false;
     let mut board: Array2D<CELL>;
     let mut wormy: Snake;
-    let mut has_moved: bool; // used to launch the timer once the player moved
     let mut has_apple: bool; // used to spawn apple on the board
-    let mut has_snake: bool; // used to spawn snake on the board
-    let mut has_frame_elapsed: bool;
     let ev = context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
     while restart_game {
@@ -57,7 +54,6 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             has_spawned: false,
         };
         has_apple = false;
-        has_frame_elapsed = false;
         clear_window(&mut canvas);
         canvas.present();
         
