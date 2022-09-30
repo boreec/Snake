@@ -146,19 +146,27 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
                         wormy.is_allowed_to_move = true;
-                        if wormy.dir != DIRECTION::DOWNWARD { wormy.dir = DIRECTION::UPWARD };
+                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::DOWNWARD {
+                            wormy.dir = DIRECTION::UPWARD;
+                        }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
                         wormy.is_allowed_to_move = true;
-                        if wormy.dir != DIRECTION::UPWARD { wormy.dir = DIRECTION::DOWNWARD };
+                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::UPWARD {
+                            wormy.dir = DIRECTION::DOWNWARD
+                        };
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
                         wormy.is_allowed_to_move = true;
-                        if wormy.dir != DIRECTION::RIGHTWARD { wormy.dir = DIRECTION::LEFTWARD; }
+                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::RIGHTWARD {
+                            wormy.dir = DIRECTION::LEFTWARD;
+                        }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
                         wormy.is_allowed_to_move = true;
-                        if wormy.dir != DIRECTION::LEFTWARD { wormy.dir = DIRECTION::RIGHTWARD; }
+                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::LEFTWARD {
+                            wormy.dir = DIRECTION::RIGHTWARD;
+                        }
                     }
                     _ => {}
                 }
