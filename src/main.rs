@@ -19,6 +19,12 @@ const FRAME_DURATION: u32 = 1000;
 
 struct FrameEvent;
 
+struct GameState {
+    context: sdl2::Sdl,
+    is_game_restarted: bool,
+    is_game_over:bool,
+}
+
 fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -32,18 +38,21 @@ fn main() {
 }
 
 fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
- 
-    let mut event_pump = context.event_pump().unwrap();
+
+    let mut gs = GameState {
+        context: context,
+        is_game_restarted: true,
+        is_game_over: false,
+    };
+    let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
-    let mut restart_game: bool = true;
-    let mut is_game_over: bool = false;
     let mut board: Array2D<CELL>;
     let mut wormy: Snake;
     let mut has_apple: bool; // used to spawn apple on the board
-    let ev = context.event().unwrap();
+    let ev = gs.context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
-    while restart_game {
-        restart_game = false;
+    while gs.is_game_restarted {
+        gs.is_game_restarted = false;
         
         board = Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize);
         wormy = Snake {
@@ -57,7 +66,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         clear_window(&mut canvas);
         canvas.present();
         
-        let timer_subsystem = context.timer().unwrap();
+        let timer_subsystem = gs.context.timer().unwrap();
         let _timer = timer_subsystem.add_timer(
             FRAME_DURATION,
             Box::new(|| {
@@ -69,7 +78,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         );
 
         'game_loop: loop {
-            if is_game_over|| restart_game {
+            if gs.is_game_over|| gs.is_game_restarted {
                 break 'game_loop;
             }
 
@@ -125,7 +134,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
 
                     if wormy.is_blocked() {
-                        is_game_over = true;
+                        gs.is_game_over = true;
                         break 'game_loop;
                     }
                     wormy.make_a_move();
@@ -137,12 +146,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 match event {
                     Event::Quit {..} |
                     Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                        is_game_over = true;
-                        restart_game = false;
+                        gs.is_game_over = true;
+                        gs.is_game_restarted = false;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
-                        restart_game = true;
-                        is_game_over = false;
+                        gs.is_game_restarted = true;
+                        gs.is_game_over = false;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
                         wormy.is_allowed_to_move = true;
