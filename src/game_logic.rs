@@ -81,4 +81,14 @@ impl Snake {
     pub fn move_left(&mut self) {
         self.pos.0 -= 1;
     }
+
+    pub fn make_a_move(&mut self) {
+        match self.dir {
+            DIRECTION::UPWARD => { self.move_up(); }
+            DIRECTION::DOWNWARD => { self.move_down(); }
+            DIRECTION::LEFTWARD => { self.move_left(); }
+            DIRECTION::RIGHTWARD => { self.move_right(); }
+            _ => {}
+        } 
+    }
 }

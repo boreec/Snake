@@ -11,8 +11,6 @@ use crate::game_logic::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
-use std::time::Instant;
-
 use rand::thread_rng;
 use rand::Rng;
 
@@ -44,7 +42,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut has_moved: bool; // used to launch the timer once the player moved
     let mut has_apple: bool; // used to spawn apple on the board
     let mut has_snake: bool; // used to spawn snake on the board
-    let mut last_time: Instant; // used to send an event periodically
+
     let ev = context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
     while restart_game {
@@ -61,8 +59,6 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         has_moved = false;
         clear_window(&mut canvas);
         canvas.present();
-
-        last_time = Instant::now();
         
         let timer_subsystem = context.timer().unwrap();
         let _timer = timer_subsystem.add_timer(
@@ -146,7 +142,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
             
         
-            if has_moved && last_time.elapsed().as_millis() > FRAME_DURATION as u128 {
+            if has_moved {
                 if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {                
                     wormy.tail.push((wormy.pos.0, wormy.pos.1));
                     board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
@@ -159,20 +155,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     wormy.tail[0] = wormy.pos;
                 }
 
-                last_time = Instant::now();
-
                 if wormy.is_blocked() {
                     is_game_over = true;
                     break 'game_loop;
                 }
-                
-                match wormy.dir {
-                    DIRECTION::UPWARD => { wormy.move_up(); }
-                    DIRECTION::DOWNWARD => { wormy.move_down(); }
-                    DIRECTION::LEFTWARD => { wormy.move_left(); }
-                    DIRECTION::RIGHTWARD => { wormy.move_right(); }
-                    _ => {}
-                }
+
+                wormy.make_a_move();
                 draw_board(&board, &wormy, &mut canvas);
                 canvas.present();
             }
