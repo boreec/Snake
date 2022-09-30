@@ -17,7 +17,7 @@ use rand::Rng;
 // The Time between two frames in milliseconds.
 const FRAME_DURATION: u32 = 1000;
 
-struct FrameEvent {a:i32}
+struct FrameEvent;
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -66,7 +66,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             FRAME_DURATION,
             Box::new(|| {
                 println!("timer");
-                let fv = FrameEvent { a:42 };
+                let fv = FrameEvent;
                 ev.push_custom_event(fv).unwrap();
                 FRAME_DURATION
             }),
