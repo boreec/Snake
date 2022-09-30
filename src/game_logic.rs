@@ -27,6 +27,7 @@ pub struct Snake {
     pub dir: DIRECTION,
     pub tail: Vec<(usize, usize)>,
     pub is_allowed_to_move: bool,
+    pub has_spawned: bool,
 }
 
 impl Snake {

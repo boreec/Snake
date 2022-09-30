@@ -54,9 +54,9 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             dir: DIRECTION::UNDEFINED,
             tail: Vec::new(),
             is_allowed_to_move: false,
+            has_spawned: false,
         };
         has_apple = false;
-        has_snake = false;
         has_frame_elapsed = false;
         clear_window(&mut canvas);
         canvas.present();
@@ -93,12 +93,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 }
             }
 
-            if !has_snake {
+            if !wormy.has_spawned {
                 let snake_pos = random_empty_cell(&board, &wormy);
                 match snake_pos {
                     Some(pos) => {
                         wormy.pos = pos;
-                        has_snake = true;
+                        wormy.has_spawned = true;
                         draw_board(&board, &wormy, &mut canvas);
                         canvas.present();
                     }
