@@ -53,10 +53,10 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             pos: (0,0),
             dir: DIRECTION::UNDEFINED,
             tail: Vec::new(),
+            is_allowed_to_move: false,
         };
         has_apple = false;
         has_snake = false;
-        has_moved = false;
         has_frame_elapsed = false;
         clear_window(&mut canvas);
         canvas.present();
@@ -115,7 +115,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             if event.is_user_event() {
                 let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
                 println!("do something on timer :)");
-                if has_moved {
+                if wormy.is_allowed_to_move {
                     if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {
                         wormy.tail.push((wormy.pos.0, wormy.pos.1));
                         board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
@@ -149,52 +149,20 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         is_game_over = false;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
-                        if wormy.dir != DIRECTION::DOWNWARD {
-                            wormy.dir = DIRECTION::UPWARD;
-                            has_moved = true;
-                            println!("direction set to up");
-                        }
+                        wormy.is_allowed_to_move = true;
+                        if wormy.dir != DIRECTION::DOWNWARD { wormy.dir = DIRECTION::UPWARD };
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
-                        if wormy.dir != DIRECTION::UPWARD {
-                            wormy.dir = DIRECTION::DOWNWARD;
-                            has_moved = true;
-                            println!("direction set to down");
-                        }
+                        wormy.is_allowed_to_move = true;
+                        if wormy.dir != DIRECTION::UPWARD { wormy.dir = DIRECTION::DOWNWARD };
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
-                        if wormy.dir != DIRECTION::RIGHTWARD {
-                            wormy.dir = DIRECTION::LEFTWARD;
-                            has_moved = true;
-                            println!("direction set to left");
-                        }
+                        wormy.is_allowed_to_move = true;
+                        if wormy.dir != DIRECTION::RIGHTWARD { wormy.dir = DIRECTION::LEFTWARD; }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
-                        if wormy.dir != DIRECTION::LEFTWARD {
-                            wormy.dir = DIRECTION::RIGHTWARD;
-                            has_moved = true;
-                            println!("direction set to right");
-                        }
-                    }
-                    _ => {}
-                }
-            }
-        }
-        if is_game_over && restart_game {
-            draw_game_over(&mut canvas);
-            canvas.present();
-            'game_over_loop: loop {
-                let e = event_pump.wait_event();
-                match e {
-                    Event::Quit {..} |
-                    Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                        break 'game_over_loop;
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
-                        println!("restart");
-                        restart_game = true;
-                        is_game_over = false;
-                        break 'game_over_loop;
+                        wormy.is_allowed_to_move = true;
+                        if wormy.dir != DIRECTION::LEFTWARD { wormy.dir = DIRECTION::RIGHTWARD; }
                     }
                     _ => {}
                 }
