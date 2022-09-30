@@ -15,9 +15,9 @@ use rand::thread_rng;
 use rand::Rng;
 
 // The Time between two frames in milliseconds.
-const FRAME_DURATION: u32 = 100;
+const FRAME_DURATION: u32 = 1000;
 
-struct FrameEvent {}
+struct FrameEvent {a:i32}
 
 fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -42,7 +42,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut has_moved: bool; // used to launch the timer once the player moved
     let mut has_apple: bool; // used to spawn apple on the board
     let mut has_snake: bool; // used to spawn snake on the board
-
+    let mut has_frame_elapsed: bool;
     let ev = context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
     while restart_game {
@@ -57,20 +57,26 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         has_apple = false;
         has_snake = false;
         has_moved = false;
+        has_frame_elapsed = false;
         clear_window(&mut canvas);
         canvas.present();
         
         let timer_subsystem = context.timer().unwrap();
         let _timer = timer_subsystem.add_timer(
-            100,
+            FRAME_DURATION,
             Box::new(|| {
-                ev.push_custom_event(FrameEvent{}).unwrap();
+                println!("timer");
+                let fv = FrameEvent { a:42 };
+                ev.push_custom_event(fv).unwrap();
                 FRAME_DURATION
             }),
         );
 
         'game_loop: loop {
-            
+            if is_game_over|| restart_game {
+                break 'game_loop;
+            }
+
             if !has_apple {
                 let apple_pos = random_empty_cell(&board, &wormy);
                 match apple_pos {
@@ -102,71 +108,79 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
                 }
             }
-            
-            let e = event_pump.wait_event();
-            match e {
-                // Quit the program is window is closed or ESC is pressed.
-                Event::Quit {..} |
-                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    break 'game_loop;
-                }
-                Event::KeyDown { keycode: Some(Keycode::Up), ..} => {            
-                    if wormy.dir != DIRECTION::DOWNWARD {
-                        wormy.dir = DIRECTION::UPWARD;
-                        has_moved = true;
-                    }
-                }
-                Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
-                    if wormy.dir != DIRECTION::DOWNWARD {
-                        wormy.dir = DIRECTION::DOWNWARD;
-                        has_moved = true;
-                    }
-                }
-                Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
-                    if wormy.dir != DIRECTION::RIGHTWARD {
-                        wormy.dir = DIRECTION::LEFTWARD;
-                        has_moved = true;
-                    }
-                }
-                Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
-                    if wormy.dir != DIRECTION::LEFTWARD {
-                        wormy.dir = DIRECTION::RIGHTWARD;
-                        has_moved = true;
-                    }
-                }
-                Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
-                    restart_game = true;
-                    break 'game_loop;
-                }
-                _ => {}
-            }
-            
-        
-            if has_moved {
-                if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {                
-                    wormy.tail.push((wormy.pos.0, wormy.pos.1));
-                    board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
-                    has_apple = false;
-                }
-                if !wormy.tail.is_empty() {
-                    for i in (1..wormy.tail.len()).rev() {
-                        wormy.tail[i] = wormy.tail[i - 1];
-                    }
-                    wormy.tail[0] = wormy.pos;
-                }
 
-                if wormy.is_blocked() {
-                    is_game_over = true;
-                    break 'game_loop;
-                }
+            let event = event_pump.wait_event();
 
-                wormy.make_a_move();
-                draw_board(&board, &wormy, &mut canvas);
-                canvas.present();
+            // custom events
+            if event.is_user_event() {
+                let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
+                println!("do something on timer :)");
+                if has_moved {
+                    if board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {
+                        wormy.tail.push((wormy.pos.0, wormy.pos.1));
+                        board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
+                        has_apple = false;
+                    }
+                    if !wormy.tail.is_empty() {
+                        for i in (1..wormy.tail.len()).rev() {
+                            wormy.tail[i] = wormy.tail[i - 1];
+                        }
+                        wormy.tail[0] = wormy.pos;
+                    }
+
+                    if wormy.is_blocked() {
+                        is_game_over = true;
+                        break 'game_loop;
+                    }
+                    wormy.make_a_move();
+                    draw_board(&board, &wormy, &mut canvas);
+                    canvas.present();
+                }
+            }else {
+                // existing sdl2 events
+                match event {
+                    Event::Quit {..} |
+                    Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                        is_game_over = true;
+                        restart_game = false;
+                    }
+                    Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+                        restart_game = true;
+                        is_game_over = false;
+                    }
+                    Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
+                        if wormy.dir != DIRECTION::DOWNWARD {
+                            wormy.dir = DIRECTION::UPWARD;
+                            has_moved = true;
+                            println!("direction set to up");
+                        }
+                    }
+                    Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
+                        if wormy.dir != DIRECTION::UPWARD {
+                            wormy.dir = DIRECTION::DOWNWARD;
+                            has_moved = true;
+                            println!("direction set to down");
+                        }
+                    }
+                    Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
+                        if wormy.dir != DIRECTION::RIGHTWARD {
+                            wormy.dir = DIRECTION::LEFTWARD;
+                            has_moved = true;
+                            println!("direction set to left");
+                        }
+                    }
+                    Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
+                        if wormy.dir != DIRECTION::LEFTWARD {
+                            wormy.dir = DIRECTION::RIGHTWARD;
+                            has_moved = true;
+                            println!("direction set to right");
+                        }
+                    }
+                    _ => {}
+                }
             }
         }
-
-        if is_game_over {
+        if is_game_over && restart_game {
             draw_game_over(&mut canvas);
             canvas.present();
             'game_over_loop: loop {
@@ -195,7 +209,6 @@ fn random_empty_cell(board: &Array2D<CELL>, snake: &Snake) -> Option<(usize, usi
     for (i, row) in board.rows_iter().enumerate() {
         for (j, _element) in row.enumerate() {
             if board[(i,j)] == CELL::EMPTY && !snake.tail.contains(&(i as usize,j as usize)) && snake.pos != (i,j) {
-                
                 available_cells.push((i, j));
             }
         }
