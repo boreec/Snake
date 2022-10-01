@@ -9,9 +9,6 @@ use crate::game_logic::*;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
-use rand::thread_rng;
-use rand::Rng;
-
 // The Time between two frames in milliseconds.
 const FRAME_DURATION: u32 = 1000;
 
@@ -152,24 +149,4 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
         }
     }
-}
-
-fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
-    let mut available_cells:Vec<(usize, usize)> = Vec::new();
-
-    for (i, row) in gs.board.rows_iter().enumerate() {
-        for (j, _element) in row.enumerate() {
-            if gs.board[(i,j)] == CELL::EMPTY && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
-                available_cells.push((i, j));
-            }
-        }
-    }
-
-    if available_cells.is_empty() {
-        return None;
-    }
-
-    let mut rng = thread_rng();
-
-    return Some(available_cells[rng.gen_range(0..available_cells.len())]);
 }

@@ -1,5 +1,8 @@
 use array2d::Array2D;
 
+use rand::thread_rng;
+use rand::Rng;
+
 // The width and height in CELLS for the board.
 pub const BOARD_SIZE: u32 = 10;
 
@@ -115,6 +118,26 @@ impl Snake {
         }
 
     }
+}
+
+pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
+    let mut available_cells:Vec<(usize, usize)> = Vec::new();
+
+    for (i, row) in gs.board.rows_iter().enumerate() {
+        for (j, _element) in row.enumerate() {
+            if gs.board[(i,j)] == CELL::EMPTY && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
+                available_cells.push((i, j));
+            }
+        }
+    }
+
+    if available_cells.is_empty() {
+        return None;
+    }
+
+    let mut rng = thread_rng();
+
+    return Some(available_cells[rng.gen_range(0..available_cells.len())]);
 }
 
 pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
