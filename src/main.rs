@@ -92,8 +92,8 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
 
             // custom events
             if event.is_user_event() {
-                let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
-                println!("do something on timer :)");
+                // let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
+                // if there is more than on custom_event, it has to be checked here.
                 if gs.snake.is_allowed_to_move {
                     if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == CELL::APPLE {
                         gs.snake.tail.push((gs.snake.pos.0, gs.snake.pos.1));
