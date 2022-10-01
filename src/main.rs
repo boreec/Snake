@@ -127,13 +127,8 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = CELL::EMPTY;
                         has_apple = false;
                     }
-                    if !gs.snake.tail.is_empty() {
-                        for i in (1..gs.snake.tail.len()).rev() {
-                            gs.snake.tail[i] = gs.snake.tail[i - 1];
-                        }
-                        gs.snake.tail[0] = gs.snake.pos;
-                    }
-
+                    gs.snake.update_tail();
+                   
                     if gs.snake.is_blocked() {
                         gs.is_game_over = true;
                         break 'game_loop;

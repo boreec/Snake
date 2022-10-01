@@ -93,4 +93,14 @@ impl Snake {
             _ => {}
         } 
     }
+
+    pub fn update_tail(&mut self) {
+        if !self.tail.is_empty() {
+            for i in (1..self.tail.len()).rev() {
+                self.tail[i] = self.tail[i - 1];
+            }
+            self.tail[0] = self.pos;
+        }
+
+    }
 }
