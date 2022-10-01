@@ -22,6 +22,7 @@ struct FrameEvent;
 struct GameState {
     context: sdl2::Sdl,
     board: Array2D<CELL>,
+    snake: Snake,
     is_game_restarted: bool,
     is_game_over:bool,
 }
@@ -42,6 +43,13 @@ fn initialize_game_state(context: sdl2::Sdl) -> GameState {
     return GameState {
         context: context,
         board: Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
+        snake: Snake {
+            pos: (0,0),
+            dir: DIRECTION::UNDEFINED,
+            tail: Vec::new(),
+            is_allowed_to_move: false,
+            has_spawned: false,
+        },
         is_game_restarted: true,
         is_game_over: false,
     };
@@ -52,20 +60,11 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut gs = initialize_game_state(context);
     let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
-    let mut wormy: Snake;
     let mut has_apple: bool; // used to spawn apple on the board
     let ev = gs.context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
     while gs.is_game_restarted {
         gs.is_game_restarted = false;
-        
-        wormy = Snake {
-            pos: (0,0),
-            dir: DIRECTION::UNDEFINED,
-            tail: Vec::new(),
-            is_allowed_to_move: false,
-            has_spawned: false,
-        };
         has_apple = false;
         clear_window(&mut canvas);
         canvas.present();
@@ -85,12 +84,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
 
             if !has_apple {
-                let apple_pos = random_empty_cell(&gs.board, &wormy);
+                let apple_pos = random_empty_cell(&gs.board, &gs.snake);
                 match apple_pos {
                     Some(pos) => {
                         gs.board[pos] = CELL::APPLE;
                         has_apple = true;
-                        draw_board(&gs.board, &wormy, &mut canvas);
+                        draw_board(&gs.board, &gs.snake, &mut canvas);
                         canvas.present();
                     }
                     None => {
@@ -100,13 +99,13 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 }
             }
 
-            if !wormy.has_spawned {
-                let snake_pos = random_empty_cell(&gs.board, &wormy);
+            if !gs.snake.has_spawned {
+                let snake_pos = random_empty_cell(&gs.board, &gs.snake);
                 match snake_pos {
                     Some(pos) => {
-                        wormy.pos = pos;
-                        wormy.has_spawned = true;
-                        draw_board(&gs.board, &wormy, &mut canvas);
+                        gs.snake.pos = pos;
+                        gs.snake.has_spawned = true;
+                        draw_board(&gs.board, &gs.snake, &mut canvas);
                         canvas.present();
                     }
                     None => {
@@ -122,25 +121,26 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             if event.is_user_event() {
                 let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
                 println!("do something on timer :)");
-                if wormy.is_allowed_to_move {
-                    if gs.board[(wormy.pos.0, wormy.pos.1)] == CELL::APPLE {
-                        wormy.tail.push((wormy.pos.0, wormy.pos.1));
-                        gs.board[(wormy.pos.0, wormy.pos.1)] = CELL::EMPTY;
+                if gs.snake.is_allowed_to_move {
+                    if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == CELL::APPLE {
+                        gs.snake.tail.push((gs.snake.pos.0, gs.snake.pos.1));
+                        gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = CELL::EMPTY;
                         has_apple = false;
                     }
-                    if !wormy.tail.is_empty() {
-                        for i in (1..wormy.tail.len()).rev() {
-                            wormy.tail[i] = wormy.tail[i - 1];
+                    if !gs.snake.tail.is_empty() {
+                        for i in (1..gs.snake.tail.len()).rev() {
+                            gs.snake.tail[i] = gs.snake.tail[i - 1];
                         }
-                        wormy.tail[0] = wormy.pos;
+                        gs.snake.tail[0] = gs.snake.pos;
                     }
 
-                    if wormy.is_blocked() {
+                    if gs.snake.is_blocked() {
                         gs.is_game_over = true;
                         break 'game_loop;
                     }
-                    wormy.make_a_move();
-                    draw_board(&gs.board, &wormy, &mut canvas);
+
+                    gs.snake.make_a_move();
+                    draw_board(&gs.board, &gs.snake, &mut canvas);
                     canvas.present();
                 }
             }else {
@@ -156,27 +156,27 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         gs.is_game_over = false;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
-                        wormy.is_allowed_to_move = true;
-                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::DOWNWARD {
-                            wormy.dir = DIRECTION::UPWARD;
+                        gs.snake.is_allowed_to_move = true;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::DOWNWARD {
+                            gs.snake.dir = DIRECTION::UPWARD;
                         }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
-                        wormy.is_allowed_to_move = true;
-                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::UPWARD {
-                            wormy.dir = DIRECTION::DOWNWARD
+                        gs.snake.is_allowed_to_move = true;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::UPWARD {
+                            gs.snake.dir = DIRECTION::DOWNWARD
                         };
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
-                        wormy.is_allowed_to_move = true;
-                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::RIGHTWARD {
-                            wormy.dir = DIRECTION::LEFTWARD;
+                        gs.snake.is_allowed_to_move = true;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::RIGHTWARD {
+                            gs.snake.dir = DIRECTION::LEFTWARD;
                         }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
-                        wormy.is_allowed_to_move = true;
-                        if wormy.tail.is_empty() || wormy.dir != DIRECTION::LEFTWARD {
-                            wormy.dir = DIRECTION::RIGHTWARD;
+                        gs.snake.is_allowed_to_move = true;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::LEFTWARD {
+                            gs.snake.dir = DIRECTION::RIGHTWARD;
                         }
                     }
                     _ => {}
