@@ -57,13 +57,14 @@ fn initialize_game_state(context: sdl2::Sdl) -> GameState {
 
 fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
 
-    let mut gs = initialize_game_state(context);
+    let mut gs: GameState = initialize_game_state(context);
     let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
     let mut has_apple: bool; // used to spawn apple on the board
     let ev = gs.context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
     while gs.is_game_restarted {
+        gs = initialize_game_state(gs.context);
         gs.is_game_restarted = false;
         has_apple = false;
         clear_window(&mut canvas);
