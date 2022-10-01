@@ -1,4 +1,3 @@
-use array2d::Array2D;
 use crate::game_logic::*;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
@@ -24,9 +23,9 @@ pub fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>){
     canvas.clear();
 }
 
-pub fn draw_board(board: &Array2D<CELL>, snake: &Snake, canvas:  &mut sdl2::render::Canvas<sdl2::video::Window>){
+pub fn draw_board(gs: &GameState, canvas:  &mut sdl2::render::Canvas<sdl2::video::Window>){
     // 1. Draw the board (apple, walls, ...).
-    for (i, row) in board.rows_iter().enumerate() {
+    for (i, row) in gs.board.rows_iter().enumerate() {
         for (j, element) in row.enumerate() {
             match element {
                 CELL::EMPTY => {draw_cell(i as i32, j as i32, COLOR_BACKGROUND, canvas)}
@@ -35,9 +34,9 @@ pub fn draw_board(board: &Array2D<CELL>, snake: &Snake, canvas:  &mut sdl2::rend
         }
     }
     //2. Draw the snake.
-    draw_cell(snake.pos.0 as i32, snake.pos.1 as i32, COLOR_SNAKE_HEAD, canvas);
+    draw_cell(gs.snake.pos.0 as i32, gs.snake.pos.1 as i32, COLOR_SNAKE_HEAD, canvas);
 
-    for i in &snake.tail {
+    for i in &gs.snake.tail {
         draw_cell(i.0 as i32, i.1 as i32, COLOR_SNAKE_TAIL, canvas);
     }
 }

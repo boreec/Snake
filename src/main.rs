@@ -19,14 +19,6 @@ const FRAME_DURATION: u32 = 1000;
 
 struct FrameEvent;
 
-struct GameState {
-    context: sdl2::Sdl,
-    board: Array2D<CELL>,
-    snake: Snake,
-    is_game_restarted: bool,
-    is_game_over:bool,
-}
-
 fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -90,7 +82,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     Some(pos) => {
                         gs.board[pos] = CELL::APPLE;
                         has_apple = true;
-                        draw_board(&gs.board, &gs.snake, &mut canvas);
+                        draw_board(&gs, &mut canvas);
                         canvas.present();
                     }
                     None => {
@@ -106,7 +98,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     Some(pos) => {
                         gs.snake.pos = pos;
                         gs.snake.has_spawned = true;
-                        draw_board(&gs.board, &gs.snake, &mut canvas);
+                        draw_board(&gs, &mut canvas);
                         canvas.present();
                     }
                     None => {
@@ -136,7 +128,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
 
                     gs.snake.make_a_move();
-                    draw_board(&gs.board, &gs.snake, &mut canvas);
+                    draw_board(&gs, &mut canvas);
                     canvas.present();
                 }
             }else {

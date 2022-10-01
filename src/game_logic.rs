@@ -1,3 +1,5 @@
+use array2d::Array2D;
+
 // The width and height in CELLS for the board.
 pub const BOARD_SIZE: u32 = 10;
 
@@ -29,6 +31,15 @@ pub struct Snake {
     pub is_allowed_to_move: bool,
     pub has_spawned: bool,
 }
+
+pub struct GameState {
+    pub context: sdl2::Sdl,
+    pub board: Array2D<CELL>,
+    pub snake: Snake,
+    pub is_game_restarted: bool,
+    pub is_game_over:bool,
+}
+
 
 impl Snake {
     // return true if the Snake can not move in its direction
