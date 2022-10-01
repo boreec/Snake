@@ -3,8 +3,6 @@ extern crate sdl2;
 mod view;
 mod game_logic;
 
-use array2d::Array2D;
-
 use crate::view::*;
 use crate::game_logic::*;
 
@@ -29,22 +27,6 @@ fn main() {
         .unwrap();
 
     game_loop(sdl_context, window);
-}
-
-fn initialize_game_state(context: sdl2::Sdl) -> GameState {
-    return GameState {
-        context: context,
-        board: Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
-        snake: Snake {
-            pos: (0,0),
-            dir: DIRECTION::UNDEFINED,
-            tail: Vec::new(),
-            is_allowed_to_move: false,
-            has_spawned: false,
-        },
-        is_game_restarted: true,
-        is_game_over: false,
-    };
 }
 
 fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
