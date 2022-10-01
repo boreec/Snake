@@ -54,19 +54,9 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
 
             if gs.apples == 0 {
-                let apple_pos = random_empty_cell(&gs);
-                match apple_pos {
-                    Some(pos) => {
-                        gs.board[pos] = CELL::APPLE;
-                        gs.apples += 1;
-                        draw_board(&gs, &mut canvas);
-                        canvas.present();
-                    }
-                    None => {
-                        println!("Apple could not spawn.");
-                        break 'game_loop;
-                    }
-                }
+                generate_apple(&mut gs);
+                draw_board(&gs, &mut canvas);
+                canvas.present();
             }
 
             if !gs.snake.has_spawned {

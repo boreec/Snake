@@ -120,6 +120,19 @@ impl Snake {
     }
 }
 
+pub fn generate_apple(gs: &mut GameState ){
+    let apple_pos = random_empty_cell(&gs);
+    match apple_pos {
+        Some(pos) => {
+            gs.board[pos] = CELL::APPLE;
+            gs.apples += 1;
+        }
+        None => {
+            panic!("Apple could not be generated!");
+        }
+    }
+}
+
 pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
     let mut available_cells:Vec<(usize, usize)> = Vec::new();
 
