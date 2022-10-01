@@ -88,7 +88,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         gs.apples -= 1;
                     }
                     gs.snake.update_tail();
-                   
+                    
                     if gs.snake.is_blocked() {
                         gs.is_game_over = true;
                         break 'game_loop;

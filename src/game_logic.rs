@@ -44,7 +44,6 @@ pub struct GameState {
     pub is_game_over:bool,
 }
 
-
 impl Snake {
     // return true if the Snake can not move in its direction
     // (because of a wall, board edge, its own tail...)
@@ -106,7 +105,7 @@ impl Snake {
             DIRECTION::LEFTWARD => { self.move_left(); }
             DIRECTION::RIGHTWARD => { self.move_right(); }
             _ => {}
-        } 
+        }
     }
 
     pub fn update_tail(&mut self) {
@@ -116,7 +115,6 @@ impl Snake {
             }
             self.tail[0] = self.pos;
         }
-
     }
 }
 
@@ -169,4 +167,3 @@ pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
         is_game_over: false,
     };
 }
-
