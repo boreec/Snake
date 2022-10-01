@@ -36,6 +36,7 @@ pub struct GameState {
     pub context: sdl2::Sdl,
     pub board: Array2D<CELL>,
     pub snake: Snake,
+    pub apples: u32,
     pub is_game_restarted: bool,
     pub is_game_over:bool,
 }
@@ -127,6 +128,7 @@ pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
             is_allowed_to_move: false,
             has_spawned: false,
         },
+        apples: 0,
         is_game_restarted: true,
         is_game_over: false,
     };

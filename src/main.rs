@@ -34,13 +34,11 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut gs: GameState = initialize_game_state(context);
     let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
-    let mut has_apple: bool; // used to spawn apple on the board
     let ev = gs.context.event().unwrap();
     ev.register_custom_event::<FrameEvent>().unwrap();
     while gs.is_game_restarted {
         gs = initialize_game_state(gs.context);
         gs.is_game_restarted = false;
-        has_apple = false;
         clear_window(&mut canvas);
         canvas.present();
         
@@ -58,12 +56,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 break 'game_loop;
             }
 
-            if !has_apple {
+            if gs.apples == 0 {
                 let apple_pos = random_empty_cell(&gs);
                 match apple_pos {
                     Some(pos) => {
                         gs.board[pos] = CELL::APPLE;
-                        has_apple = true;
+                        gs.apples += 1;
                         draw_board(&gs, &mut canvas);
                         canvas.present();
                     }
@@ -100,7 +98,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == CELL::APPLE {
                         gs.snake.tail.push((gs.snake.pos.0, gs.snake.pos.1));
                         gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = CELL::EMPTY;
-                        has_apple = false;
+                        gs.apples -= 1;
                     }
                     gs.snake.update_tail();
                    
