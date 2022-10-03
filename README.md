@@ -5,6 +5,8 @@ This is a Snake game completly written in Rust and the ![SDL2 bindings](https://
 ![snake_img](img/snake.png)
 ![game_over](img/gameover.png)
 
+![](https://youtu.be/Heaoez-ZWxA)
+
 ## How to execute ?
 
 Use **cargo** to build this project with the following commands:
