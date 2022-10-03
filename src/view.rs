@@ -2,6 +2,8 @@ use crate::game_logic::*;
 use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 
+use std::path::Path;
+
 // The width and height in pixels for the main window.
 pub const WINDOW_SIZE: u32 = 800;
 
@@ -16,6 +18,22 @@ pub const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0,200,0);
 pub fn draw_game_over(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     canvas.set_draw_color(Color::RED);
     canvas.clear();
+    let font_path: &Path = Path::new("font/Snake_Chan/Snake Chan.ttf");
+    let ttf_context = sdl2::ttf::init().expect("SDL TTF initialization failed");
+    let result_load_font = ttf_context.load_font(font_path, 128);
+    if result_load_font.is_err() {
+        panic!("Problem loading font {}", font_path.display());
+    }
+    let texture_creator = canvas.texture_creator();
+    let font = result_load_font.unwrap();
+    let surface = font
+        .render("GAME OVER")
+        .blended(Color::BLACK)
+        .unwrap();
+
+    let texture = texture_creator.create_texture_from_surface(&surface).unwrap();
+    canvas.copy(&texture, None, None).unwrap();
+
 }
 
 pub fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>){
