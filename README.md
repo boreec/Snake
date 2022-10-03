@@ -1,6 +1,9 @@
 # Snake
 
-This is a Snake game completly written in Rust and the SDL2 bindings.
+This is a Snake game completly written in Rust and the ![SDL2 bindings](https://github.com/Rust-SDL2/rust-sdl2).
+
+![snake_img]("img/snake.png")
+![game_over]("img/gameover.png")
 
 ## How to execute ?
 
@@ -11,7 +14,7 @@ cargo run --release --features ttf
 
 If an error occur, make sure the following packages are installed on the system:
 ```bash
-sudo apt-get install libsdl2-ttf-dev
+sudo apt-get install libsdl2-dev libsdl2-ttf-dev
 ```
 
 ## How to play ?
