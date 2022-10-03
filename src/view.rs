@@ -17,15 +17,18 @@ pub const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0,200,0);
 
 pub fn draw_game_over(gs: &GameState,
                       canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
-    canvas.set_draw_color(Color::RED);
-    canvas.clear();
-    let go_font_path: &Path = Path::new("font/Snake_Chan/Snake Chan.ttf");
+
     let ttf_context = sdl2::ttf::init().expect("SDL TTF initialization failed");
-    let go_result_load_font = ttf_context.load_font(go_font_path, 128);
-    if go_result_load_font.is_err() {
-        panic!("Problem loading font {}", go_font_path.display());
-    }
     let texture_creator = canvas.texture_creator();
+
+    // Initialize paths to fonts.
+    let snake_chan_font_path: &Path =  Path::new("font/Snake_Chan/Snake Chan.ttf");
+    let sono_font_path: &Path = Path::new("font/sono/desktop/Sono-Regular.ttf");
+
+    let go_result_load_font = ttf_context.load_font(snake_chan_font_path, 128);
+    if go_result_load_font.is_err() {
+        panic!("Problem loading font {}", snake_chan_font_path.display());
+    }
 
     // game_over message
     let go_font = go_result_load_font.unwrap();
@@ -37,13 +40,11 @@ pub fn draw_game_over(gs: &GameState,
     let go_rect_height: u32 = WINDOW_SIZE / 4;
     let go_font_rect = Rect::new((go_rect_width / 2) as i32, go_rect_height as i32, go_rect_width, go_rect_height);
     let go_texture = texture_creator.create_texture_from_surface(&go_surface).unwrap();
-    canvas.copy(&go_texture, None, go_font_rect).unwrap();
-
+    
     // score message
-    let score_font_path: &Path = Path::new("font/sono/desktop/Sono-Regular.ttf");
-    let score_result_load_font = ttf_context.load_font(score_font_path, 128);
+    let score_result_load_font = ttf_context.load_font(sono_font_path, 128);
     if score_result_load_font.is_err() {
-        panic!("Problem loading font {}", score_font_path.display());
+        panic!("Problem loading font {}", sono_font_path.display());
     }
     let score_font = score_result_load_font.unwrap();
     let score_surface = score_font
@@ -54,6 +55,13 @@ pub fn draw_game_over(gs: &GameState,
     let score_rect_height: u32 = WINDOW_SIZE / 8;
     let score_font_rect = Rect::new((WINDOW_SIZE / 2 - score_rect_width / 2) as i32, 400, score_rect_width, score_rect_height);
     let score_texture = texture_creator.create_texture_from_surface(&score_surface).unwrap();
+
+    // Set the background color
+    canvas.set_draw_color(Color::RED);
+    canvas.clear();
+
+    // Display the texts
+    canvas.copy(&go_texture, None, go_font_rect).unwrap();
     canvas.copy(&score_texture, None, score_font_rect).unwrap();
 
 }
