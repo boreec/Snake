@@ -6,7 +6,7 @@ This is a Snake game completly written in Rust and the ![SDL2 bindings](https://
 ![game_over](img/gameover.png)
 
 <figure class="video_container">
-  <iframe src="https://www.youtube.com/watch?v=Heaoez-ZWxA" frameborder="0" allowfullscreen="true"> </iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Heaoez-ZWxA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </figure>
 
 ## How to execute ?
