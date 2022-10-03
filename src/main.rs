@@ -10,7 +10,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 // The Time between two frames in milliseconds.
-const FRAME_DURATION: u32 = 1000;
+const FRAME_DURATION: u32 = 100;
 
 struct FrameEvent;
 
@@ -140,7 +140,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
         }
         if !gs.is_game_restarted && !gs.is_game_quitted {
-            draw_game_over(&mut canvas);
+            draw_game_over(&gs, &mut canvas);
             canvas.present();
             let mut decision_taken = false;
 
@@ -152,7 +152,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         gs.is_game_restarted = false;
                         decision_taken = true;
                     }
-                    Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+                    Event::KeyDown { keycode: Some(Keycode::Space), .. } => {
                         gs.is_game_restarted = true;
                         decision_taken = true;
                     }

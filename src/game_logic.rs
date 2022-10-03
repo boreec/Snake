@@ -4,7 +4,7 @@ use rand::thread_rng;
 use rand::Rng;
 
 // The width and height in CELLS for the board.
-pub const BOARD_SIZE: u32 = 10;
+pub const BOARD_SIZE: u32 = 20;
 
 // The board is divided is a dimensional grid with cells.
 // Each cell can be in one of the following states.
