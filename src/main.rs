@@ -105,6 +105,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
                         gs.is_game_over = true;
                         gs.is_game_restarted = false;
+                        gs.is_game_quitted = true;
                     }
                     Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
                         gs.is_game_restarted = true;
@@ -133,6 +134,27 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                         if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::LEFTWARD {
                             gs.snake.dir = DIRECTION::RIGHTWARD;
                         }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        if !gs.is_game_restarted && !gs.is_game_quitted {
+            draw_game_over(&mut canvas);
+            canvas.present();
+            let mut decision_taken = false;
+
+            while !decision_taken {
+                let event = event_pump.wait_event();
+                match event {
+                    Event::Quit {..} |
+                    Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                        gs.is_game_restarted = false;
+                        decision_taken = true;
+                    }
+                    Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+                        gs.is_game_restarted = true;
+                        decision_taken = true;
                     }
                     _ => {}
                 }

@@ -42,6 +42,7 @@ pub struct GameState {
     pub apples: u32,
     pub is_game_restarted: bool,
     pub is_game_over:bool,
+    pub is_game_quitted:bool,
 }
 
 impl Snake {
@@ -165,5 +166,6 @@ pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
         apples: 0,
         is_game_restarted: true,
         is_game_over: false,
+        is_game_quitted: false,
     };
 }
