@@ -31,8 +31,11 @@ pub fn draw_game_over(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
         .blended(Color::BLACK)
         .unwrap();
 
+    let rect_width: u32 = WINDOW_SIZE / 2;
+    let rect_height: u32 = WINDOW_SIZE / 4;
+    let font_rect = Rect::new((rect_width / 2) as i32, rect_height as i32, rect_width, rect_height);
     let texture = texture_creator.create_texture_from_surface(&surface).unwrap();
-    canvas.copy(&texture, None, None).unwrap();
+    canvas.copy(&texture, None, font_rect).unwrap();
 
 }
 
