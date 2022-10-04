@@ -75,75 +75,80 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
                 }
             }
-
-            let event = event_pump.wait_event();
-
-            // custom events
-            if event.is_user_event() {
-                // let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
-                // if there is more than on custom_event, it has to be checked here.
-                if gs.snake.is_allowed_to_move {
-                    if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == Cell::APPLE {
-                        gs.snake.tail.push((gs.snake.pos.0, gs.snake.pos.1));
-                        gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = Cell::EMPTY;
-                        gs.apples -= 1;
-                    }
-                    gs.snake.update_tail();
-                    
-                    if gs.snake.is_blocked() {
-                        gs.is_game_over = true;
-                        break 'game_loop;
-                    }
-
-                    gs.snake.make_a_move();
-                    draw_board(&gs, &mut canvas);
-                    canvas.present();
-                }
-            }else {
-                // existing sdl2 events
-                match event {
-                    Event::Quit {..} |
-                    Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                        gs.is_game_over = true;
-                        gs.is_game_restarted = false;
-                        gs.is_game_quitted = true;
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
-                        gs.is_game_restarted = true;
-                        gs.is_game_over = false;
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
-                        gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::DOWNWARD {
-                            gs.snake.dir = Direction::UPWARD;
-                        }
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
-                        gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::UPWARD {
-                            gs.snake.dir = Direction::DOWNWARD
-                        };
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
-                        gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::RIGHTWARD {
-                            gs.snake.dir = Direction::LEFTWARD;
-                        }
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
-                        gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::LEFTWARD {
-                            gs.snake.dir = Direction::RIGHTWARD;
-                        }
-                    }
-                    _ => {}
-                }
-            }
+            handle_game_events(&mut gs, &mut event_pump,&mut canvas);
         }
         if !gs.is_game_restarted && !gs.is_game_quitted {
             draw_game_over(&gs, &mut canvas);
             canvas.present();
             handle_game_over_events(&mut gs, &mut event_pump);
+        }
+    }
+}
+
+fn handle_game_events(gs: &mut GameState,
+                      event_pump: &mut EventPump,
+                      canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
+    let event = event_pump.wait_event();
+
+    // custom events
+    if event.is_user_event() {
+        // let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
+        // if there is more than on custom_event, it has to be checked here.
+        if gs.snake.is_allowed_to_move {
+            if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == Cell::APPLE {
+                gs.snake.tail.push((gs.snake.pos.0, gs.snake.pos.1));
+                gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = Cell::EMPTY;
+                gs.apples -= 1;
+            }
+            gs.snake.update_tail();
+            
+            if gs.snake.is_blocked() {
+                gs.is_game_over = true;
+                return;
+            }
+
+            gs.snake.make_a_move();
+            draw_board(&gs, canvas);
+            canvas.present();
+        }
+    }else {
+        // existing sdl2 events
+        match event {
+            Event::Quit {..} |
+            Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                gs.is_game_over = true;
+                gs.is_game_restarted = false;
+                gs.is_game_quitted = true;
+            }
+            Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+                gs.is_game_restarted = true;
+                gs.is_game_over = false;
+            }
+            Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
+                gs.snake.is_allowed_to_move = true;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::DOWNWARD {
+                    gs.snake.dir = Direction::UPWARD;
+                }
+            }
+            Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
+                gs.snake.is_allowed_to_move = true;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::UPWARD {
+                    gs.snake.dir = Direction::DOWNWARD
+                };
+            }
+            Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
+                gs.snake.is_allowed_to_move = true;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::RIGHTWARD {
+                    gs.snake.dir = Direction::LEFTWARD;
+                }
+            }
+            Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
+                gs.snake.is_allowed_to_move = true;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::LEFTWARD {
+                    gs.snake.dir = Direction::RIGHTWARD;
+                }
+            }
+            _ => {}
         }
     }
 }
