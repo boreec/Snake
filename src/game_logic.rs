@@ -9,7 +9,7 @@ pub const BOARD_SIZE: u32 = 20;
 // The board is divided is a dimensional grid with cells.
 // Each cell can be in one of the following states.
 #[derive(Clone,PartialEq, Eq)]
-pub enum CELL {
+pub enum Cell {
     EMPTY,
     APPLE,
 }
@@ -37,7 +37,7 @@ pub struct Snake {
 
 pub struct GameState {
     pub context: sdl2::Sdl,
-    pub board: Array2D<CELL>,
+    pub board: Array2D<Cell>,
     pub snake: Snake,
     pub apples: u32,
     pub is_game_restarted: bool,
@@ -123,7 +123,7 @@ pub fn generate_apple(gs: &mut GameState ){
     let apple_pos = random_empty_cell(&gs);
     match apple_pos {
         Some(pos) => {
-            gs.board[pos] = CELL::APPLE;
+            gs.board[pos] = Cell::APPLE;
             gs.apples += 1;
         }
         None => {
@@ -137,7 +137,7 @@ pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
 
     for (i, row) in gs.board.rows_iter().enumerate() {
         for (j, _element) in row.enumerate() {
-            if gs.board[(i,j)] == CELL::EMPTY && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
+            if gs.board[(i,j)] == Cell::EMPTY && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
                 available_cells.push((i, j));
             }
         }
@@ -155,7 +155,7 @@ pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
 pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
     return GameState {
         context: context,
-        board: Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
+        board: Array2D::filled_with(Cell::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
         snake: Snake {
             pos: (0,0),
             dir: Direction::UNDEFINED,
