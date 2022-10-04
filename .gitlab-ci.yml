@@ -1,0 +1,12 @@
+image: rust:buster
+
+
+before_script:
+  - apt-get update
+  - apt-get install -y libsdl2-dev libsdl2-ttf-dev
+
+compile:
+  stage: build
+  script:
+    - cargo build --verbose --features --ttf
+
