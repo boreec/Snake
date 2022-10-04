@@ -56,8 +56,6 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
 
             if gs.apples == 0 {
                 generate_apple(&mut gs);
-                draw_board(&gs, &mut canvas);
-                canvas.present();
             }
 
             if !gs.snake.has_spawned {
@@ -66,8 +64,6 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     Some(pos) => {
                         gs.snake.pos = pos;
                         gs.snake.has_spawned = true;
-                        draw_board(&gs, &mut canvas);
-                        canvas.present();
                     }
                     None => {
                         println!("Snake could not spawn.");
@@ -75,7 +71,12 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
                 }
             }
+
             handle_game_events(&mut gs, &mut event_pump,&mut canvas);
+
+            draw_board(&gs, &mut canvas);
+            canvas.present();
+
         }
         if !gs.is_game_restarted && !gs.is_game_quitted {
             draw_game_over(&gs, &mut canvas);
@@ -101,12 +102,10 @@ fn handle_game_events(gs: &mut GameState,
                 gs.apples -= 1;
             }
             gs.snake.update_tail();
-            
             if gs.snake.is_blocked() {
                 gs.is_game_over = true;
                 return;
             }
-
             gs.snake.make_a_move();
             draw_board(&gs, canvas);
             canvas.present();
