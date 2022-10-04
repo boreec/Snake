@@ -117,6 +117,17 @@ impl Snake {
             self.tail[0] = self.pos;
         }
     }
+
+    pub fn spawn(&mut self, new_pos: Option<(usize, usize)>) {
+        match new_pos {
+            Some(new_pos) => {
+                self.pos = new_pos;
+            }
+            None => {
+                panic!("Snake could not spawn.");
+            }
+        }
+    }
 }
 
 pub fn generate_apple(gs: &mut GameState ){

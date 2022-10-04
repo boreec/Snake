@@ -59,25 +59,16 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
             }
 
             if !gs.snake.has_spawned {
-                let snake_pos = random_empty_cell(&gs);
-                match snake_pos {
-                    Some(pos) => {
-                        gs.snake.pos = pos;
-                        gs.snake.has_spawned = true;
-                    }
-                    None => {
-                        println!("Snake could not spawn.");
-                        break 'game_loop;
-                    }
-                }
+                gs.snake.spawn(random_empty_cell(&gs));
+                gs.snake.has_spawned = true;
             }
 
             handle_game_events(&mut gs, &mut event_pump,&mut canvas);
 
             draw_board(&gs, &mut canvas);
             canvas.present();
-
         }
+
         if !gs.is_game_restarted && !gs.is_game_quitted {
             draw_game_over(&gs, &mut canvas);
             canvas.present();
