@@ -41,7 +41,7 @@ pub struct GameState {
     pub snake: Snake,
     pub apples: u32,
     pub is_game_restarted: bool,
-    pub is_game_over:bool,
+    pub is_game_over: bool,
     pub is_game_quitted:bool,
 }
 
