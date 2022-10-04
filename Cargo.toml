@@ -9,3 +9,7 @@ edition = "2021"
 array2d = "0.2.1"
 rand = "0.8.5"
 sdl2 = "0.35.2"
+
+
+[features]
+ttf = ["sdl2/ttf"]
