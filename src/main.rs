@@ -113,26 +113,26 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                     }
                     Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
                         gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::DOWNWARD {
-                            gs.snake.dir = DIRECTION::UPWARD;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::DOWNWARD {
+                            gs.snake.dir = Direction::UPWARD;
                         }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
                         gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::UPWARD {
-                            gs.snake.dir = DIRECTION::DOWNWARD
+                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::UPWARD {
+                            gs.snake.dir = Direction::DOWNWARD
                         };
                     }
                     Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
                         gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::RIGHTWARD {
-                            gs.snake.dir = DIRECTION::LEFTWARD;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::RIGHTWARD {
+                            gs.snake.dir = Direction::LEFTWARD;
                         }
                     }
                     Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
                         gs.snake.is_allowed_to_move = true;
-                        if gs.snake.tail.is_empty() || gs.snake.dir != DIRECTION::LEFTWARD {
-                            gs.snake.dir = DIRECTION::RIGHTWARD;
+                        if gs.snake.tail.is_empty() || gs.snake.dir != Direction::LEFTWARD {
+                            gs.snake.dir = Direction::RIGHTWARD;
                         }
                     }
                     _ => {}

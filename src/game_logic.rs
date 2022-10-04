@@ -19,7 +19,7 @@ pub enum CELL {
 // Then, once an arrow key is pressed, its direction
 // is updated accordingly.
 #[derive(PartialEq)]
-pub enum DIRECTION {
+pub enum Direction {
     UNDEFINED,
     LEFTWARD,
     RIGHTWARD,
@@ -29,7 +29,7 @@ pub enum DIRECTION {
 
 pub struct Snake {
     pub pos: (usize, usize),
-    pub dir: DIRECTION,
+    pub dir: Direction,
     pub tail: Vec<(usize, usize)>,
     pub is_allowed_to_move: bool,
     pub has_spawned: bool,
@@ -49,25 +49,25 @@ impl Snake {
     // return true if the Snake can not move in its direction
     // (because of a wall, board edge, its own tail...)
     pub fn is_blocked(&self) -> bool {
-        if self.dir == DIRECTION::UPWARD && self.pos.1 == 0 {
+        if self.dir == Direction::UPWARD && self.pos.1 == 0 {
             return true;
         }
-        if self.dir == DIRECTION::DOWNWARD && self.pos.1 as u32 == BOARD_SIZE - 1 {
+        if self.dir == Direction::DOWNWARD && self.pos.1 as u32 == BOARD_SIZE - 1 {
             return true;
         }
-        if self.dir == DIRECTION::RIGHTWARD && self.pos.0 as u32 == BOARD_SIZE - 1 {
+        if self.dir == Direction::RIGHTWARD && self.pos.0 as u32 == BOARD_SIZE - 1 {
             return true;
         }
-        if self.dir == DIRECTION::LEFTWARD && self.pos.0 as u32 == 0 {
+        if self.dir == Direction::LEFTWARD && self.pos.0 as u32 == 0 {
             return true;
         }
 
         let target_cell: Option<(usize, usize)> = {
             match self.dir {
-                DIRECTION::UPWARD => { Some((self.pos.0, self.pos.1 - 1)) }
-                DIRECTION::DOWNWARD => { Some((self.pos.0, self.pos.1 + 1)) }
-                DIRECTION::RIGHTWARD => { Some((self.pos.0 + 1, self.pos.1)) }
-                DIRECTION::LEFTWARD => { Some((self.pos.0 - 1, self.pos.1)) }
+                Direction::UPWARD => { Some((self.pos.0, self.pos.1 - 1)) }
+                Direction::DOWNWARD => { Some((self.pos.0, self.pos.1 + 1)) }
+                Direction::RIGHTWARD => { Some((self.pos.0 + 1, self.pos.1)) }
+                Direction::LEFTWARD => { Some((self.pos.0 - 1, self.pos.1)) }
                 _ => {None}
             }
         };
@@ -101,10 +101,10 @@ impl Snake {
 
     pub fn make_a_move(&mut self) {
         match self.dir {
-            DIRECTION::UPWARD => { self.move_up(); }
-            DIRECTION::DOWNWARD => { self.move_down(); }
-            DIRECTION::LEFTWARD => { self.move_left(); }
-            DIRECTION::RIGHTWARD => { self.move_right(); }
+            Direction::UPWARD => { self.move_up(); }
+            Direction::DOWNWARD => { self.move_down(); }
+            Direction::LEFTWARD => { self.move_left(); }
+            Direction::RIGHTWARD => { self.move_right(); }
             _ => {}
         }
     }
@@ -158,7 +158,7 @@ pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
         board: Array2D::filled_with(CELL::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
         snake: Snake {
             pos: (0,0),
-            dir: DIRECTION::UNDEFINED,
+            dir: Direction::UNDEFINED,
             tail: Vec::new(),
             is_allowed_to_move: false,
             has_spawned: false,
