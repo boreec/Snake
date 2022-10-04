@@ -63,7 +63,6 @@ pub fn draw_game_over(gs: &GameState,
     // Display the texts
     canvas.copy(&go_texture, None, go_font_rect).unwrap();
     canvas.copy(&score_texture, None, score_font_rect).unwrap();
-
 }
 
 pub fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>){
