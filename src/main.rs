@@ -63,7 +63,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
                 gs.snake.has_spawned = true;
             }
 
-            handle_game_events(&mut gs, &mut event_pump,&mut canvas);
+            handle_game_events(&mut gs, &mut event_pump, &mut canvas);
 
             draw_board(&gs, &mut canvas);
             canvas.present();
