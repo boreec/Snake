@@ -2,12 +2,9 @@
 
 This is a Snake game completly written in Rust and the ![SDL2 bindings](https://github.com/Rust-SDL2/rust-sdl2).
 
-![snake_img](img/snake.png)
-![game_over](img/gameover.png)
+You can see more similar projects here: https://boreec.fr/projects/
 
-<figure class="video_container">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Heaoez-ZWxA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</figure>
+Here is a video of the game running: https://www.youtube.com/watch?v=Heaoez-ZWxA
 
 ## How to execute ?
 
@@ -32,3 +29,7 @@ Use the arrow keys to move around the Snake (light green square), in order to ea
 * down-arrow key: move down
 * escape key: quit the game and close the window
 * space key: restart the game
+
+## Images
+![snake_img](img/snake.png)
+![game_over](img/gameover.png)
