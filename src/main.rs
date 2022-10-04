@@ -7,6 +7,7 @@ use crate::view::*;
 use crate::game_logic::*;
 
 use sdl2::event::Event;
+use sdl2::EventPump;
 use sdl2::keyboard::Keycode;
 
 // The Time between two frames in milliseconds.
@@ -142,23 +143,26 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         if !gs.is_game_restarted && !gs.is_game_quitted {
             draw_game_over(&gs, &mut canvas);
             canvas.present();
-            let mut decision_taken = false;
+            handle_game_over_events(&mut gs, &mut event_pump);
+        }
+    }
+}
 
-            while !decision_taken {
-                let event = event_pump.wait_event();
-                match event {
-                    Event::Quit {..} |
-                    Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                        gs.is_game_restarted = false;
-                        decision_taken = true;
-                    }
-                    Event::KeyDown { keycode: Some(Keycode::Space), .. } => {
-                        gs.is_game_restarted = true;
-                        decision_taken = true;
-                    }
-                    _ => {}
-                }
+fn handle_game_over_events(gs: &mut GameState, event_pump: &mut EventPump){
+    let mut decision_taken = false;
+    while !decision_taken {
+        let event = event_pump.wait_event();
+        match event {
+            Event::Quit {..} |
+            Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+                gs.is_game_restarted = false;
+                decision_taken = true;
             }
+            Event::KeyDown { keycode: Some(Keycode::Space), .. } => {
+                gs.is_game_restarted = true;
+                decision_taken = true;
+            }
+            _ => {}
         }
     }
 }
