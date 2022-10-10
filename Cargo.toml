@@ -13,4 +13,5 @@ sdl2 = "0.35.2"
 
 
 [features]
+default = ["ttf"]
 ttf = ["sdl2/ttf"]
