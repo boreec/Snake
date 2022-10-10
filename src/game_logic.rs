@@ -35,6 +35,20 @@ pub struct Snake {
     pub has_spawned: bool,
 }
 
+impl Snake {
+    pub fn new(position: (usize, usize),
+               direction: Direction,
+               can_move: bool,
+               has_spawned: bool) -> Snake {
+        Snake {
+            pos: position,
+            dir: direction,
+            tail: Vec::new(),
+            is_allowed_to_move: can_move,
+            has_spawned: has_spawned,
+        }
+    }
+}
 pub struct GameState {
     pub context: sdl2::Sdl,
     pub board: Array2D<Cell>,
@@ -50,13 +64,7 @@ impl GameState {
         return GameState {
             context: context,
             board: Array2D::filled_with(Cell::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
-            snake: Snake {
-                pos: (0,0),
-                dir: Direction::UNDEFINED,
-                tail: Vec::new(),
-                is_allowed_to_move: false,
-                has_spawned: false,
-            },
+            snake: Snake::new((0,0), Direction::UNDEFINED, false, false),
             apples: 0,
             is_game_restarted: true,
             is_game_over: false,
