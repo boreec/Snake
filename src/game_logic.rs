@@ -27,6 +27,7 @@ pub enum Direction {
     DOWNWARD,
 }
 
+/// Data structure for the Snake.
 pub struct Snake {
     pub pos: (usize, usize),
     pub dir: Direction,
@@ -36,6 +37,8 @@ pub struct Snake {
 }
 
 impl Snake {
+
+    /// Create a new Snake object with a position, direction and status.
     pub fn new(position: (usize, usize),
                direction: Direction,
                can_move: bool,
@@ -49,6 +52,8 @@ impl Snake {
         }
     }
 }
+
+/// Data structure for the state of the game at any point.
 pub struct GameState {
     pub context: sdl2::Sdl,
     pub board: Array2D<Cell>,
@@ -60,6 +65,8 @@ pub struct GameState {
 }
 
 impl GameState {
+
+    /// Create a new GameState object.
     pub fn new(context: sdl2::Sdl) -> GameState {
         return GameState {
             context: context,
