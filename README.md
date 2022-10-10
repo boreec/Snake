@@ -10,7 +10,7 @@ Here is a video of the game running: https://www.youtube.com/watch?v=Heaoez-ZWxA
 
 Use **cargo** to build this project with the following command:
 ```bash
-cargo run --release --features ttf
+cargo run --release
 ```
 
 If an error occur, make sure the following packages are installed on the system:
