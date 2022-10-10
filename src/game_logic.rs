@@ -45,6 +45,26 @@ pub struct GameState {
     pub is_game_quitted:bool,
 }
 
+impl GameState {
+    pub fn new(context: sdl2::Sdl) -> GameState {
+        return GameState {
+            context: context,
+            board: Array2D::filled_with(Cell::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
+            snake: Snake {
+                pos: (0,0),
+                dir: Direction::UNDEFINED,
+                tail: Vec::new(),
+                is_allowed_to_move: false,
+                has_spawned: false,
+            },
+            apples: 0,
+            is_game_restarted: true,
+            is_game_over: false,
+            is_game_quitted: false,
+        };
+    }
+}
+
 impl Snake {
     // return true if the Snake can not move in its direction
     // (because of a wall, board edge, its own tail...)
@@ -161,22 +181,4 @@ pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
     let mut rng = thread_rng();
 
     return Some(available_cells[rng.gen_range(0..available_cells.len())]);
-}
-
-pub fn initialize_game_state(context: sdl2::Sdl) -> GameState {
-    return GameState {
-        context: context,
-        board: Array2D::filled_with(Cell::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
-        snake: Snake {
-            pos: (0,0),
-            dir: Direction::UNDEFINED,
-            tail: Vec::new(),
-            is_allowed_to_move: false,
-            has_spawned: false,
-        },
-        apples: 0,
-        is_game_restarted: true,
-        is_game_over: false,
-        is_game_quitted: false,
-    };
 }
