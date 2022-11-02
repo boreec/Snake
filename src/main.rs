@@ -98,7 +98,7 @@ fn handle_game_events(gs: &mut GameState,
                 return;
             }
             gs.snake.make_a_move();
-            draw_board(&gs, canvas);
+            draw_board(gs, canvas);
             canvas.present();
         }
     }else {
