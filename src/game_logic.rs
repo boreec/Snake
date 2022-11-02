@@ -18,7 +18,7 @@ pub enum Cell {
 // At first the snake does not move so its UNDEFINED.
 // Then, once an arrow key is pressed, its direction
 // is updated accordingly.
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum Direction {
     UNDEFINED,
     LEFTWARD,
