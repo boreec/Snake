@@ -52,7 +52,8 @@ impl Snake {
     }
 }
 
-/// Data structure for the state of the game at any point.
+/// The **GameState** data structure contains every game entities (**Snake**, **Apple**)
+/// and booleans about the state of game (game over, restart, etc.).
 pub struct GameState {
     pub context: sdl2::Sdl,
     pub board: Array2D<Cell>,
