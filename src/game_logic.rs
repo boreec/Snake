@@ -47,7 +47,7 @@ impl Snake {
             dir: direction,
             tail: Vec::new(),
             is_allowed_to_move: can_move,
-            has_spawned: has_spawned,
+            has_spawned,
         }
     }
 }
