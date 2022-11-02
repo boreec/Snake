@@ -166,7 +166,7 @@ impl Snake {
 }
 
 pub fn generate_apple(gs: &mut GameState ){
-    let apple_pos = random_empty_cell(&gs);
+    let apple_pos = random_empty_cell(gs);
     match apple_pos {
         Some(pos) => {
             gs.board[pos] = Cell::APPLE;
