@@ -115,7 +115,7 @@ impl Snake {
         while i < self.tail.len() && self.tail[i] != target_cell.unwrap() {
             i += 1;
         }
-        return i < self.tail.len();
+        i < self.tail.len()
     }
 
     pub fn move_up(&mut self) {
