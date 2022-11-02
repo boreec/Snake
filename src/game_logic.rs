@@ -195,5 +195,5 @@ pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
 
     let mut rng = thread_rng();
 
-    return Some(available_cells[rng.gen_range(0..available_cells.len())]);
+    Some(available_cells[rng.gen_range(0..available_cells.len())])
 }
