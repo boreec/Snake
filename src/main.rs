@@ -116,26 +116,26 @@ fn handle_game_events(gs: &mut GameState,
             }
             Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
                 gs.snake.is_allowed_to_move = true;
-                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::DOWNWARD {
-                    gs.snake.dir = Direction::UPWARD;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::DOWNWARD) {
+                    gs.snake.dir = Some(Direction::UPWARD);
                 }
             }
             Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
                 gs.snake.is_allowed_to_move = true;
-                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::UPWARD {
-                    gs.snake.dir = Direction::DOWNWARD
+                if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::UPWARD) {
+                    gs.snake.dir = Some(Direction::DOWNWARD)
                 };
             }
             Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
                 gs.snake.is_allowed_to_move = true;
-                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::RIGHTWARD {
-                    gs.snake.dir = Direction::LEFTWARD;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::RIGHTWARD) {
+                    gs.snake.dir = Some(Direction::LEFTWARD);
                 }
             }
             Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
                 gs.snake.is_allowed_to_move = true;
-                if gs.snake.tail.is_empty() || gs.snake.dir != Direction::LEFTWARD {
-                    gs.snake.dir = Direction::RIGHTWARD;
+                if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::LEFTWARD) {
+                    gs.snake.dir = Some(Direction::RIGHTWARD);
                 }
             }
             _ => {}
