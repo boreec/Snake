@@ -20,10 +20,10 @@ pub enum Cell {
 // is updated accordingly.
 #[derive(PartialEq, Eq)]
 pub enum Direction {
-    LEFTWARD,
-    RIGHTWARD,
-    UPWARD,
-    DOWNWARD,
+    Leftward,
+    Rightward,
+    Upward,
+    Downward,
 }
 
 /// Data structure for the Snake.
@@ -83,25 +83,25 @@ impl Snake {
     // return true if the Snake can not move in its direction
     // (because of a wall, board edge, its own tail...)
     pub fn is_blocked(&self) -> bool {
-        if self.dir == Some(Direction::UPWARD) && self.pos.1 == 0 {
+        if self.dir == Some(Direction::Upward) && self.pos.1 == 0 {
             return true;
         }
-        if self.dir == Some(Direction::DOWNWARD) && self.pos.1 as u32 == BOARD_SIZE - 1 {
+        if self.dir == Some(Direction::Downward) && self.pos.1 as u32 == BOARD_SIZE - 1 {
             return true;
         }
-        if self.dir == Some(Direction::RIGHTWARD) && self.pos.0 as u32 == BOARD_SIZE - 1 {
+        if self.dir == Some(Direction::Rightward) && self.pos.0 as u32 == BOARD_SIZE - 1 {
             return true;
         }
-        if self.dir == Some(Direction::LEFTWARD) && self.pos.0 as u32 == 0 {
+        if self.dir == Some(Direction::Leftward) && self.pos.0 as u32 == 0 {
             return true;
         }
 
         let target_cell: Option<(usize, usize)> = {
             match self.dir {
-                Some(Direction::UPWARD) => { Some((self.pos.0, self.pos.1 - 1)) }
-                Some(Direction::DOWNWARD) => { Some((self.pos.0, self.pos.1 + 1)) }
-                Some(Direction::RIGHTWARD) => { Some((self.pos.0 + 1, self.pos.1)) }
-                Some(Direction::LEFTWARD) => { Some((self.pos.0 - 1, self.pos.1)) }
+                Some(Direction::Upward) => { Some((self.pos.0, self.pos.1 - 1)) }
+                Some(Direction::Downward) => { Some((self.pos.0, self.pos.1 + 1)) }
+                Some(Direction::Rightward) => { Some((self.pos.0 + 1, self.pos.1)) }
+                Some(Direction::Leftward) => { Some((self.pos.0 - 1, self.pos.1)) }
                 _ => {None}
             }
         };
@@ -135,10 +135,10 @@ impl Snake {
 
     pub fn make_a_move(&mut self) {
         match self.dir {
-            Some(Direction::UPWARD) => { self.move_up(); }
-            Some(Direction::DOWNWARD) => { self.move_down(); }
-            Some(Direction::LEFTWARD) => { self.move_left(); }
-            Some(Direction::RIGHTWARD) => { self.move_right(); }
+            Some(Direction::Upward) => { self.move_up(); }
+            Some(Direction::Downward) => { self.move_down(); }
+            Some(Direction::Leftward) => { self.move_left(); }
+            Some(Direction::Rightward) => { self.move_right(); }
             _ => {}
         }
     }
