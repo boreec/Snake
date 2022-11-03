@@ -13,6 +13,7 @@ use sdl2::EventPump;
 /// The time between two frames (in milliseconds).
 const FRAME_DURATION: u32 = 100;
 
+/// Struct used to trigger redrawing of the game.
 struct FrameEvent;
 
 fn main() {
