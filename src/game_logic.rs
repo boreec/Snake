@@ -8,7 +8,7 @@ pub const BOARD_SIZE: u32 = 20;
 
 // The board is divided is a dimensional grid with cells.
 // Each cell can be in one of the following states.
-#[derive(Clone,PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub enum Cell {
     Empty,
     Apple,
@@ -36,12 +36,13 @@ pub struct Snake {
 }
 
 impl Snake {
-
     /// Create a new Snake object with a position, direction and status.
-    pub fn new(position: (usize, usize),
-               direction: Option<Direction>,
-               can_move: bool,
-               has_spawned: bool) -> Snake {
+    pub fn new(
+        position: (usize, usize),
+        direction: Option<Direction>,
+        can_move: bool,
+        has_spawned: bool,
+    ) -> Snake {
         Snake {
             pos: position,
             dir: direction,
@@ -61,17 +62,16 @@ pub struct GameState {
     pub apples: u32,
     pub is_game_restarted: bool,
     pub is_game_over: bool,
-    pub is_game_quitted:bool,
+    pub is_game_quitted: bool,
 }
 
 impl GameState {
-
     /// Create a new GameState object.
     pub fn new(context: sdl2::Sdl) -> GameState {
         GameState {
             context,
             board: Array2D::filled_with(Cell::Empty, BOARD_SIZE as usize, BOARD_SIZE as usize),
-            snake: Snake::new((0,0), None, false, false),
+            snake: Snake::new((0, 0), None, false, false),
             apples: 0,
             is_game_restarted: true,
             is_game_over: false,
@@ -99,11 +99,11 @@ impl Snake {
 
         let target_cell: Option<(usize, usize)> = {
             match self.dir {
-                Some(Direction::Upward) => { Some((self.pos.0, self.pos.1 - 1)) }
-                Some(Direction::Downward) => { Some((self.pos.0, self.pos.1 + 1)) }
-                Some(Direction::Rightward) => { Some((self.pos.0 + 1, self.pos.1)) }
-                Some(Direction::Leftward) => { Some((self.pos.0 - 1, self.pos.1)) }
-                _ => {None}
+                Some(Direction::Upward) => Some((self.pos.0, self.pos.1 - 1)),
+                Some(Direction::Downward) => Some((self.pos.0, self.pos.1 + 1)),
+                Some(Direction::Rightward) => Some((self.pos.0 + 1, self.pos.1)),
+                Some(Direction::Leftward) => Some((self.pos.0 - 1, self.pos.1)),
+                _ => None,
             }
         };
         if target_cell.is_none() {
@@ -136,10 +136,18 @@ impl Snake {
 
     pub fn make_a_move(&mut self) {
         match self.dir {
-            Some(Direction::Upward) => { self.move_up(); }
-            Some(Direction::Downward) => { self.move_down(); }
-            Some(Direction::Leftward) => { self.move_left(); }
-            Some(Direction::Rightward) => { self.move_right(); }
+            Some(Direction::Upward) => {
+                self.move_up();
+            }
+            Some(Direction::Downward) => {
+                self.move_down();
+            }
+            Some(Direction::Leftward) => {
+                self.move_left();
+            }
+            Some(Direction::Rightward) => {
+                self.move_right();
+            }
             _ => {}
         }
     }
@@ -165,7 +173,7 @@ impl Snake {
     }
 }
 
-pub fn generate_apple(gs: &mut GameState ){
+pub fn generate_apple(gs: &mut GameState) {
     let apple_pos = random_empty_cell(gs);
     match apple_pos {
         Some(pos) => {
@@ -179,11 +187,14 @@ pub fn generate_apple(gs: &mut GameState ){
 }
 
 pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
-    let mut available_cells:Vec<(usize, usize)> = Vec::new();
+    let mut available_cells: Vec<(usize, usize)> = Vec::new();
 
     for (i, row) in gs.board.rows_iter().enumerate() {
         for (j, _element) in row.enumerate() {
-            if gs.board[(i,j)] == Cell::Empty && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
+            if gs.board[(i, j)] == Cell::Empty
+                && !gs.snake.tail.contains(&(i as usize, j as usize))
+                && gs.snake.pos != (i, j)
+            {
                 available_cells.push((i, j));
             }
         }
