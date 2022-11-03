@@ -10,7 +10,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::EventPump;
 
-// The Time between two frames in milliseconds.
+/// The time between two frames (in milliseconds).
 const FRAME_DURATION: u32 = 100;
 
 struct FrameEvent;
