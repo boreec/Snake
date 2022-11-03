@@ -69,7 +69,7 @@ impl GameState {
     /// Create a new GameState object.
     pub fn new(context: sdl2::Sdl) -> GameState {
         GameState {
-            context: context,
+            context,
             board: Array2D::filled_with(Cell::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
             snake: Snake::new((0,0), None, false, false),
             apples: 0,
