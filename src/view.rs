@@ -75,8 +75,8 @@ pub fn draw_board(gs: &GameState, canvas:  &mut sdl2::render::Canvas<sdl2::video
     for (i, row) in gs.board.rows_iter().enumerate() {
         for (j, element) in row.enumerate() {
             match element {
-                Cell::EMPTY => {draw_cell(i as i32, j as i32, COLOR_BACKGROUND, canvas)}
-                Cell::APPLE => {draw_cell(i as i32, j as i32, COLOR_APPLE, canvas)}
+                Cell::Empty => {draw_cell(i as i32, j as i32, COLOR_BACKGROUND, canvas)}
+                Cell::Apple => {draw_cell(i as i32, j as i32, COLOR_APPLE, canvas)}
             }
         }
     }

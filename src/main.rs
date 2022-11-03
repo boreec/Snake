@@ -87,9 +87,9 @@ fn handle_game_events(gs: &mut GameState,
         // let custom_event = event.as_user_event_type::<FrameEvent>().unwrap();
         // if there is more than on custom_event, it has to be checked here.
         if gs.snake.is_allowed_to_move {
-            if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == Cell::APPLE {
+            if gs.board[(gs.snake.pos.0, gs.snake.pos.1)] == Cell::Apple {
                 gs.snake.tail.push((gs.snake.pos.0, gs.snake.pos.1));
-                gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = Cell::EMPTY;
+                gs.board[(gs.snake.pos.0, gs.snake.pos.1)] = Cell::Empty;
                 gs.apples -= 1;
             }
             gs.snake.update_tail();

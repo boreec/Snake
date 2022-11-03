@@ -10,8 +10,8 @@ pub const BOARD_SIZE: u32 = 20;
 // Each cell can be in one of the following states.
 #[derive(Clone,PartialEq, Eq)]
 pub enum Cell {
-    EMPTY,
-    APPLE,
+    Empty,
+    Apple,
 }
 
 // The direction in which the snakes moves.
@@ -70,7 +70,7 @@ impl GameState {
     pub fn new(context: sdl2::Sdl) -> GameState {
         GameState {
             context,
-            board: Array2D::filled_with(Cell::EMPTY, BOARD_SIZE as usize, BOARD_SIZE as usize),
+            board: Array2D::filled_with(Cell::Empty, BOARD_SIZE as usize, BOARD_SIZE as usize),
             snake: Snake::new((0,0), None, false, false),
             apples: 0,
             is_game_restarted: true,
@@ -169,7 +169,7 @@ pub fn generate_apple(gs: &mut GameState ){
     let apple_pos = random_empty_cell(gs);
     match apple_pos {
         Some(pos) => {
-            gs.board[pos] = Cell::APPLE;
+            gs.board[pos] = Cell::Apple;
             gs.apples += 1;
         }
         None => {
@@ -183,7 +183,7 @@ pub fn random_empty_cell(gs: &GameState) -> Option<(usize, usize)> {
 
     for (i, row) in gs.board.rows_iter().enumerate() {
         for (j, _element) in row.enumerate() {
-            if gs.board[(i,j)] == Cell::EMPTY && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
+            if gs.board[(i,j)] == Cell::Empty && !gs.snake.tail.contains(&(i as usize,j as usize)) && gs.snake.pos != (i,j) {
                 available_cells.push((i, j));
             }
         }
