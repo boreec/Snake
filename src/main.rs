@@ -82,6 +82,8 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     }
 }
 
+/// Handle every events happening during the game 
+/// (key pressed, frame events, etc.).
 fn handle_game_events(
     gs: &mut GameState,
     event_pump: &mut EventPump,
