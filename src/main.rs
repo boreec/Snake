@@ -16,6 +16,8 @@ const FRAME_DURATION: u32 = 100;
 /// Struct used to trigger redrawing of the game.
 struct FrameEvent;
 
+/// Program's entry point.
+/// Initialize the window and SDL's context.
 fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
