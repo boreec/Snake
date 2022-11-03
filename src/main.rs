@@ -31,6 +31,8 @@ fn main() {
     game_loop(sdl_context, window);
 }
 
+/// Run the main game loop.
+/// Initialize the **GameState** and a Timer to trigger the redrawing.
 fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     let mut gs: GameState = GameState::new(context);
     let mut event_pump = gs.context.event_pump().unwrap();
