@@ -1,14 +1,14 @@
 extern crate sdl2;
 
-mod view;
 mod game_logic;
+mod view;
 
-use crate::view::*;
 use crate::game_logic::*;
+use crate::view::*;
 
 use sdl2::event::Event;
-use sdl2::EventPump;
 use sdl2::keyboard::Keycode;
+use sdl2::EventPump;
 
 // The Time between two frames in milliseconds.
 const FRAME_DURATION: u32 = 100;
@@ -19,7 +19,8 @@ fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
-    let window = video_subsystem.window("snake", WINDOW_SIZE, WINDOW_SIZE)
+    let window = video_subsystem
+        .window("snake", WINDOW_SIZE, WINDOW_SIZE)
         .position_centered()
         .build()
         .unwrap();
@@ -28,7 +29,6 @@ fn main() {
 }
 
 fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
-
     let mut gs: GameState = GameState::new(context);
     let mut event_pump = gs.context.event_pump().unwrap();
     let mut canvas = window.into_canvas().build().unwrap();
@@ -39,7 +39,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         gs.is_game_restarted = false;
         clear_window(&mut canvas);
         canvas.present();
-        
+
         let timer_subsystem = gs.context.timer().unwrap();
         let _timer = timer_subsystem.add_timer(
             FRAME_DURATION,
@@ -50,7 +50,7 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
         );
 
         'game_loop: loop {
-            if gs.is_game_over|| gs.is_game_restarted {
+            if gs.is_game_over || gs.is_game_restarted {
                 break 'game_loop;
             }
 
@@ -77,9 +77,11 @@ fn game_loop(context: sdl2::Sdl, window: sdl2::video::Window) {
     }
 }
 
-fn handle_game_events(gs: &mut GameState,
-                      event_pump: &mut EventPump,
-                      canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
+fn handle_game_events(
+    gs: &mut GameState,
+    event_pump: &mut EventPump,
+    canvas: &mut sdl2::render::Canvas<sdl2::video::Window>,
+) {
     let event = event_pump.wait_event();
 
     // custom events
@@ -101,38 +103,56 @@ fn handle_game_events(gs: &mut GameState,
             draw_board(gs, canvas);
             canvas.present();
         }
-    }else {
+    } else {
         // existing sdl2 events
         match event {
-            Event::Quit {..} |
-            Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+            Event::Quit { .. }
+            | Event::KeyDown {
+                keycode: Some(Keycode::Escape),
+                ..
+            } => {
                 gs.is_game_over = true;
                 gs.is_game_restarted = false;
                 gs.is_game_quitted = true;
             }
-            Event::KeyDown { keycode: Some(Keycode::Space), ..} => {
+            Event::KeyDown {
+                keycode: Some(Keycode::Space),
+                ..
+            } => {
                 gs.is_game_restarted = true;
                 gs.is_game_over = false;
             }
-            Event::KeyDown { keycode: Some(Keycode::Up), ..} => {
+            Event::KeyDown {
+                keycode: Some(Keycode::Up),
+                ..
+            } => {
                 gs.snake.is_allowed_to_move = true;
                 if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::Downward) {
                     gs.snake.dir = Some(Direction::Upward);
                 }
             }
-            Event::KeyDown { keycode: Some(Keycode::Down), ..} => {
+            Event::KeyDown {
+                keycode: Some(Keycode::Down),
+                ..
+            } => {
                 gs.snake.is_allowed_to_move = true;
                 if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::Upward) {
                     gs.snake.dir = Some(Direction::Downward)
                 };
             }
-            Event::KeyDown { keycode: Some(Keycode::Left), ..} => {
+            Event::KeyDown {
+                keycode: Some(Keycode::Left),
+                ..
+            } => {
                 gs.snake.is_allowed_to_move = true;
                 if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::Rightward) {
                     gs.snake.dir = Some(Direction::Leftward);
                 }
             }
-            Event::KeyDown { keycode: Some(Keycode::Right), ..} => {
+            Event::KeyDown {
+                keycode: Some(Keycode::Right),
+                ..
+            } => {
                 gs.snake.is_allowed_to_move = true;
                 if gs.snake.tail.is_empty() || gs.snake.dir != Some(Direction::Leftward) {
                     gs.snake.dir = Some(Direction::Rightward);
@@ -143,17 +163,23 @@ fn handle_game_events(gs: &mut GameState,
     }
 }
 
-fn handle_game_over_events(gs: &mut GameState, event_pump: &mut EventPump){
+fn handle_game_over_events(gs: &mut GameState, event_pump: &mut EventPump) {
     let mut decision_taken = false;
     while !decision_taken {
         let event = event_pump.wait_event();
         match event {
-            Event::Quit {..} |
-            Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
+            Event::Quit { .. }
+            | Event::KeyDown {
+                keycode: Some(Keycode::Escape),
+                ..
+            } => {
                 gs.is_game_restarted = false;
                 decision_taken = true;
             }
-            Event::KeyDown { keycode: Some(Keycode::Space), .. } => {
+            Event::KeyDown {
+                keycode: Some(Keycode::Space),
+                ..
+            } => {
                 gs.is_game_restarted = true;
                 decision_taken = true;
             }
