@@ -170,6 +170,7 @@ fn handle_game_events(
     }
 }
 
+/// Handle the events happening during the Game Over screen.
 fn handle_game_over_events(gs: &mut GameState, event_pump: &mut EventPump) {
     let mut decision_taken = false;
     while !decision_taken {
