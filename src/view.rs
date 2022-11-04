@@ -15,6 +15,8 @@ pub const COLOR_BACKGROUND: sdl2::pixels::Color = Color::WHITE;
 
 /// The color of an apple.
 pub const COLOR_APPLE: sdl2::pixels::Color = Color::RED;
+
+/// The color of the snake's head.
 pub const COLOR_SNAKE_HEAD: sdl2::pixels::Color = Color::GREEN;
 pub const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0, 200, 0);
 
