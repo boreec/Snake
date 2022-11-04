@@ -84,6 +84,7 @@ pub fn draw_game_over(gs: &GameState, canvas: &mut sdl2::render::Canvas<sdl2::vi
     canvas.copy(&score_texture, None, score_font_rect).unwrap();
 }
 
+/// Reset the window's drawings.
 pub fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     canvas.set_draw_color(COLOR_BACKGROUND);
     canvas.clear();
