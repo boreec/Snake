@@ -10,6 +10,7 @@ pub const WINDOW_SIZE: u32 = 800;
 /// The width and height to represent a CELL on screen (in pixels).
 pub const CELL_SIZE: u32 = WINDOW_SIZE / BOARD_SIZE;
 
+/// The color of the game's background. 
 pub const COLOR_BACKGROUND: sdl2::pixels::Color = Color::WHITE;
 pub const COLOR_APPLE: sdl2::pixels::Color = Color::RED;
 pub const COLOR_SNAKE_HEAD: sdl2::pixels::Color = Color::GREEN;
