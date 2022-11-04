@@ -90,6 +90,8 @@ pub fn clear_window(canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     canvas.clear();
 }
 
+/// Draw the board's game on the window.
+/// It includes drawing the Snake (head and tail) and apples.
 pub fn draw_board(gs: &GameState, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     // 1. Draw the board (apple, walls, ...).
     for (i, row) in gs.board.rows_iter().enumerate() {
