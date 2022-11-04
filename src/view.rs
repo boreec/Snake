@@ -4,7 +4,7 @@ use sdl2::rect::Rect;
 
 use std::path::Path;
 
-// The width and height in pixels for the main window.
+/// The width and height for the main window (in pixels).
 pub const WINDOW_SIZE: u32 = 800;
 
 // The width and height in pixels to represent a CELL.
