@@ -18,6 +18,8 @@ pub const COLOR_APPLE: sdl2::pixels::Color = Color::RED;
 
 /// The color of the snake's head.
 pub const COLOR_SNAKE_HEAD: sdl2::pixels::Color = Color::GREEN;
+
+/// The color of the snake's tail.
 pub const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0, 200, 0);
 
 pub fn draw_game_over(gs: &GameState, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
