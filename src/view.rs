@@ -7,7 +7,7 @@ use std::path::Path;
 /// The width and height for the main window (in pixels).
 pub const WINDOW_SIZE: u32 = 800;
 
-// The width and height in pixels to represent a CELL.
+/// The width and height to represent a CELL on screen (in pixels).
 pub const CELL_SIZE: u32 = WINDOW_SIZE / BOARD_SIZE;
 
 pub const COLOR_BACKGROUND: sdl2::pixels::Color = Color::WHITE;
