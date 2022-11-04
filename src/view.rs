@@ -22,6 +22,9 @@ pub const COLOR_SNAKE_HEAD: sdl2::pixels::Color = Color::GREEN;
 /// The color of the snake's tail.
 pub const COLOR_SNAKE_TAIL: sdl2::pixels::Color = Color::RGB(0, 200, 0);
 
+/// Draw the game over screen.
+/// This screen contains the score of the game and allow the
+/// player to replay or to quit the game.
 pub fn draw_game_over(gs: &GameState, canvas: &mut sdl2::render::Canvas<sdl2::video::Window>) {
     let ttf_context = sdl2::ttf::init().expect("SDL TTF initialization failed");
     let texture_creator = canvas.texture_creator();
